@@ -18,12 +18,16 @@ import type { Customer } from "~backend/customers/types";
 export function CustomerList() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [filterType, setFilterType] = useState("");
+  const [filterValue, setFilterValue] = useState("");
   const [filters, setFilters] = useState({
     stageId: "",
     temperatureId: "",
     assignedSalespersonId: "",
     provinceId: "",
     contactStatusId: "",
+    productId: "",
+    appointmentStatus: "",
   });
   const [sortBy, setSortBy] = useState("created");
   const [sortOrder, setSortOrder] = useState("desc");
@@ -48,6 +52,8 @@ export function CustomerList() {
           assignedSalespersonId: filters.assignedSalespersonId || undefined,
           provinceId: filters.provinceId || undefined,
           contactStatusId: filters.contactStatusId || undefined,
+          productId: filters.productId || undefined,
+          appointmentStatus: filters.appointmentStatus || undefined,
           sortBy,
           sortOrder,
         });
@@ -67,6 +73,12 @@ export function CustomerList() {
     queryKey: ["masterdata"],
     queryFn: () => backend.masterdata.getAll(),
     staleTime: 0, // Always fresh data
+  });
+
+  const { data: employeesData } = useQuery({
+    queryKey: ["employees"],
+    queryFn: () => backend.employees.list(),
+    staleTime: 0,
   });
 
   const deleteMutation = useMutation({
@@ -101,6 +113,111 @@ export function CustomerList() {
     setFilters(prev => ({ ...prev, [key]: value === "all" ? "" : value }));
     setPage(1);
   };
+
+  const handleFilterTypeChange = (type: string) => {
+    setFilterType(type);
+    setFilterValue("");
+    // Clear all filters when changing filter type
+    setFilters({
+      stageId: "",
+      temperatureId: "",
+      assignedSalespersonId: "",
+      provinceId: "",
+      contactStatusId: "",
+      productId: "",
+      appointmentStatus: "",
+    });
+    setPage(1);
+  };
+
+  const handleFilterValueChange = (value: string) => {
+    setFilterValue(value);
+    
+    // Clear all filters first
+    const clearedFilters = {
+      stageId: "",
+      temperatureId: "",
+      assignedSalespersonId: "",
+      provinceId: "",
+      contactStatusId: "",
+      productId: "",
+      appointmentStatus: "",
+    };
+    
+    // Set the appropriate filter based on type
+    if (value && value !== "all") {
+      switch (filterType) {
+        case "product":
+          clearedFilters.productId = value;
+          break;
+        case "temperature":
+          clearedFilters.temperatureId = value;
+          break;
+        case "employee":
+          clearedFilters.assignedSalespersonId = value;
+          break;
+        case "province":
+          clearedFilters.provinceId = value;
+          break;
+        case "stage":
+          clearedFilters.stageId = value;
+          break;
+        case "appointment":
+          clearedFilters.appointmentStatus = value;
+          break;
+      }
+    }
+    
+    setFilters(clearedFilters);
+    setPage(1);
+  };
+
+  const getFilterOptions = () => {
+    switch (filterType) {
+      case "product":
+        return masterData?.products?.filter((p: any) => p.active).map((product: any) => ({
+          value: product.id,
+          label: product.name
+        })) || [];
+      case "temperature":
+        return masterData?.temperatures?.filter((t: any) => t.active).map((temp: any) => ({
+          value: temp.id,
+          label: temp.name
+        })) || [];
+      case "employee":
+        return employeesData?.employees?.filter((e: any) => e.active).map((employee: any) => ({
+          value: employee.id,
+          label: employee.name
+        })) || [];
+      case "province":
+        return masterData?.provinces?.map((province: any) => ({
+          value: province.id,
+          label: province.name
+        })) || [];
+      case "stage":
+        return masterData?.stages?.filter((s: any) => s.active).map((stage: any) => ({
+          value: stage.id,
+          label: stage.name
+        })) || [];
+      case "appointment":
+        return [
+          { value: "upcoming", label: "Có lịch hẹn sắp tới" },
+          { value: "none", label: "Không có lịch hẹn" },
+          { value: "overdue", label: "Quá hạn liên hệ" }
+        ];
+      default:
+        return [];
+    }
+  };
+
+  const filterTypes = [
+    { value: "product", label: "Sản phẩm" },
+    { value: "temperature", label: "Mức độ" },
+    { value: "employee", label: "Nhân viên" },
+    { value: "province", label: "Tỉnh thành" },
+    { value: "stage", label: "Giai đoạn" },
+    { value: "appointment", label: "Lịch hẹn" }
+  ];
 
   const getTemperatureBadgeColor = (temp: string) => {
     switch (temp) {
@@ -186,7 +303,7 @@ export function CustomerList() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
             <div className="relative col-span-1 sm:col-span-2 lg:col-span-1">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-400" />
               <Input
@@ -197,59 +314,61 @@ export function CustomerList() {
               />
             </div>
             
-            <Select value={filters.stageId} onValueChange={(value) => handleFilterChange("stageId", value)}>
+            <Select value={filterType} onValueChange={handleFilterTypeChange}>
               <SelectTrigger className="text-sm lg:text-base">
-                <SelectValue placeholder="Tất cả giai đoạn" />
+                <SelectValue placeholder="Chọn loại lọc" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả giai đoạn</SelectItem>
-                {masterData?.stages?.filter((s: any) => s.active).map((stage: any) => (
-                  <SelectItem key={stage.id} value={stage.id}>
-                    {stage.name}
+                <SelectItem value="">Không lọc</SelectItem>
+                {filterTypes.map((type) => (
+                  <SelectItem key={type.value} value={type.value}>
+                    {type.label}
                   </SelectItem>
-                )) || []}
+                ))}
               </SelectContent>
             </Select>
 
-            <Select value={filters.temperatureId} onValueChange={(value) => handleFilterChange("temperatureId", value)}>
+            <Select 
+              value={filterValue} 
+              onValueChange={handleFilterValueChange}
+              disabled={!filterType}
+            >
               <SelectTrigger className="text-sm lg:text-base">
-                <SelectValue placeholder="Tất cả mức độ" />
+                <SelectValue placeholder={filterType ? "Chọn giá trị" : "Chọn loại lọc trước"} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả mức độ</SelectItem>
-                {masterData?.temperatures?.filter((t: any) => t.active).map((temp: any) => (
-                  <SelectItem key={temp.id} value={temp.id}>
-                    {temp.name}
+                <SelectItem value="">Tất cả</SelectItem>
+                {getFilterOptions().map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
                   </SelectItem>
-                )) || []}
+                ))}
               </SelectContent>
             </Select>
-
-            <Select value={filters.provinceId} onValueChange={(value) => handleFilterChange("provinceId", value)}>
-              <SelectTrigger className="text-sm lg:text-base">
-                <SelectValue placeholder="Tất cả tỉnh" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả tỉnh</SelectItem>
-                {masterData?.provinces?.map((province: any) => (
-                  <SelectItem key={province.id} value={province.id}>
-                    {province.name}
-                  </SelectItem>
-                )) || []}
-              </SelectContent>
-            </Select>
-
-            <Select value={(filters as any).appointmentStatus || ""} onValueChange={(value) => handleFilterChange("appointmentStatus", value)}>
-              <SelectTrigger className="text-sm lg:text-base">
-                <SelectValue placeholder="Tất cả lịch hẹn" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả lịch hẹn</SelectItem>
-                <SelectItem value="upcoming">Có lịch hẹn sắp tới</SelectItem>
-                <SelectItem value="none">Không có lịch hẹn</SelectItem>
-                <SelectItem value="overdue">Quá hạn liên hệ</SelectItem>
-              </SelectContent>
-            </Select>
+            
+            {filterType && filterValue && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => {
+                  setFilterType("");
+                  setFilterValue("");
+                  setFilters({
+                    stageId: "",
+                    temperatureId: "",
+                    assignedSalespersonId: "",
+                    provinceId: "",
+                    contactStatusId: "",
+                    productId: "",
+                    appointmentStatus: "",
+                  });
+                  setPage(1);
+                }}
+                className="text-sm lg:text-base"
+              >
+                Xóa lọc
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>

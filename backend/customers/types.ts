@@ -89,6 +89,7 @@ export interface ListCustomersRequest {
   provinceId?: string;
   productId?: string;
   contactStatusId?: string;
+  appointmentStatus?: string;
   createdFrom?: Date;
   createdTo?: Date;
   sortBy?: string;

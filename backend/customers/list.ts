@@ -61,6 +61,27 @@ export const list = api<ListCustomersRequest, ListCustomersResponse>(
       whereConditions.push(`EXISTS (SELECT 1 FROM customer_products cp WHERE cp.customer_id = c.id AND cp.product_id = $${++paramCount})`);
       params.push(req.productId);
     }
+    if (req.appointmentStatus) {
+      switch (req.appointmentStatus) {
+        case 'upcoming':
+          whereConditions.push(`EXISTS (SELECT 1 FROM appointments a WHERE a.customer_id = c.id AND a.status = 'scheduled' AND a.scheduled_at >= NOW())`);
+          break;
+        case 'none':
+          whereConditions.push(`NOT EXISTS (SELECT 1 FROM appointments a WHERE a.customer_id = c.id AND a.status = 'scheduled' AND a.scheduled_at >= NOW())`);
+          break;
+        case 'overdue':
+          // For overdue, we check if there are no upcoming appointments but there are past appointments or the last contact was more than X days ago
+          whereConditions.push(`(
+            NOT EXISTS (SELECT 1 FROM appointments a WHERE a.customer_id = c.id AND a.status = 'scheduled' AND a.scheduled_at >= NOW())
+            AND (
+              EXISTS (SELECT 1 FROM appointments a WHERE a.customer_id = c.id AND a.status = 'completed' AND a.scheduled_at < NOW())
+              OR (SELECT MAX(created_at) FROM contact_history ch WHERE ch.customer_id = c.id) < NOW() - INTERVAL '30 days'
+              OR NOT EXISTS (SELECT 1 FROM contact_history ch WHERE ch.customer_id = c.id)
+            )
+          )`);
+          break;
+      }
+    }
     if (req.createdFrom) {
       whereConditions.push(`c.created_at >= $${++paramCount}`);
       params.push(req.createdFrom);

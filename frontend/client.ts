@@ -376,6 +376,7 @@ export namespace customers {
         public async list(params: RequestType<typeof api_customers_list_list>): Promise<ResponseType<typeof api_customers_list_list>> {
             // Convert our params into the objects we need for the request
             const query = makeRecord<string, string | string[]>({
+                appointmentStatus:     params.appointmentStatus,
                 assignedSalespersonId: params.assignedSalespersonId,
                 contactStatusId:       params.contactStatusId,
                 createdFrom:           params.createdFrom === undefined ? undefined : params.createdFrom.toISOString(),
