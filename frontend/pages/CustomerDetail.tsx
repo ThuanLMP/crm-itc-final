@@ -14,6 +14,7 @@ import { EditCustomerDialog } from "../components/EditCustomerDialog";
 import { CreateContactDialog } from "../components/CreateContactDialog";
 import { CreateOrderDialog } from "../components/CreateOrderDialog";
 import { CreatePaymentDialog } from "../components/CreatePaymentDialog";
+import { CustomerAppointments } from "../components/CustomerAppointments";
 import type { ContactHistory } from "~backend/contacts/types";
 import type { Order } from "~backend/orders/types";
 import type { Payment } from "~backend/payments/types";
@@ -132,8 +133,9 @@ export function CustomerDetail() {
         </div>
 
         <Tabs defaultValue="details" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 mb-4 lg:mb-6">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 mb-4 lg:mb-6">
             <TabsTrigger value="details" className="text-xs lg:text-sm">Chi tiết</TabsTrigger>
+            <TabsTrigger value="appointments" className="text-xs lg:text-sm">Lịch hẹn</TabsTrigger>
             <TabsTrigger value="contacts" className="text-xs lg:text-sm">Liên hệ</TabsTrigger>
             <TabsTrigger value="orders" className="text-xs lg:text-sm">Đơn hàng</TabsTrigger>
             <TabsTrigger value="payments" className="text-xs lg:text-sm">Thanh toán</TabsTrigger>
@@ -320,6 +322,12 @@ export function CustomerDetail() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="appointments" className="space-y-4 lg:space-y-6">
+            {id && (
+              <CustomerAppointments customerId={id} customerName={customer.name} />
+            )}
           </TabsContent>
 
           <TabsContent value="contacts" className="space-y-4 lg:space-y-6">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -14,12 +14,13 @@ interface CreateAppointmentDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
+  customerId?: string;
 }
 
-export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: CreateAppointmentDialogProps) {
+export function CreateAppointmentDialog({ open, onOpenChange, onSuccess, customerId }: CreateAppointmentDialogProps) {
   const [formData, setFormData] = useState<Partial<CreateAppointmentRequest>>({
     title: "",
-    customerId: "",
+    customerId: customerId || "",
     description: "",
     scheduledAt: new Date(),
     duration: 60,
@@ -43,6 +44,13 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
     staleTime: Infinity,
   });
 
+  // Update form data when customerId prop changes
+  useEffect(() => {
+    if (customerId) {
+      setFormData(prev => ({ ...prev, customerId }));
+    }
+  }, [customerId]);
+
   const createMutation = useMutation({
     mutationFn: (data: CreateAppointmentRequest) => backend.appointments.create(data),
     onSuccess: () => {
@@ -53,7 +61,7 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
       onSuccess();
       setFormData({
         title: "",
-        customerId: "",
+        customerId: customerId || "",
         description: "",
         scheduledAt: new Date(),
         duration: 60,
@@ -111,7 +119,11 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
 
           <div>
             <Label>Khách hàng *</Label>
-            <Select value={formData.customerId} onValueChange={(value) => handleSelectChange("customerId", value)}>
+            <Select 
+              value={formData.customerId} 
+              onValueChange={(value) => handleSelectChange("customerId", value)}
+              disabled={!!customerId}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Chọn khách hàng" />
               </SelectTrigger>
