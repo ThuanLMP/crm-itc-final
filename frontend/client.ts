@@ -113,6 +113,7 @@ export interface ClientOptions {
  * Import the endpoint handlers to derive the types for the client.
  */
 import { create as api_appointments_create_create } from "~backend/appointments/create";
+import { getByCustomer as api_appointments_get_by_customer_getByCustomer } from "~backend/appointments/get_by_customer";
 import { list as api_appointments_list_list } from "~backend/appointments/list";
 import { update as api_appointments_update_update } from "~backend/appointments/update";
 
@@ -124,6 +125,7 @@ export namespace appointments {
         constructor(baseClient: BaseClient) {
             this.baseClient = baseClient
             this.create = this.create.bind(this)
+            this.getByCustomer = this.getByCustomer.bind(this)
             this.list = this.list.bind(this)
             this.update = this.update.bind(this)
         }
@@ -135,6 +137,22 @@ export namespace appointments {
             // Now make the actual call to the API
             const resp = await this.baseClient.callTypedAPI(`/appointments`, {method: "POST", body: JSON.stringify(params)})
             return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_appointments_create_create>
+        }
+
+        /**
+         * Get all appointments for a specific customer
+         */
+        public async getByCustomer(params: RequestType<typeof api_appointments_get_by_customer_getByCustomer>): Promise<ResponseType<typeof api_appointments_get_by_customer_getByCustomer>> {
+            // Convert our params into the objects we need for the request
+            const query = makeRecord<string, string | string[]>({
+                fromDate: params.fromDate === undefined ? undefined : params.fromDate.toISOString(),
+                status:   params.status,
+                toDate:   params.toDate === undefined ? undefined : params.toDate.toISOString(),
+            })
+
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/appointments/customer/${encodeURIComponent(params.customerId)}`, {query, method: "GET", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_appointments_get_by_customer_getByCustomer>
         }
 
         /**

@@ -39,7 +39,7 @@ export const exportCustomers = api(
             c.phone as "Điện thoại",
             c.email as "Email",
             c.address as "Địa chỉ",
-            c.city as "Thành phố",
+
             p.name as "Tỉnh/Thành phố",
             ct.name as "Loại khách hàng",
             bt.name as "Loại doanh nghiệp",
@@ -77,7 +77,7 @@ export const exportCustomers = api(
             c.phone as "Điện thoại",
             c.email as "Email",
             c.address as "Địa chỉ",
-            c.city as "Thành phố",
+
             p.name as "Tỉnh/Thành phố",
             ct.name as "Loại khách hàng",
             bt.name as "Loại doanh nghiệp",
@@ -114,7 +114,7 @@ export const exportCustomers = api(
             c.phone as "Điện thoại",
             c.email as "Email",
             c.address as "Địa chỉ",
-            c.city as "Thành phố",
+
             p.name as "Tỉnh/Thành phố",
             ct.name as "Loại khách hàng",
             bt.name as "Loại doanh nghiệp",
@@ -152,7 +152,7 @@ export const exportCustomers = api(
           c.phone as "Điện thoại",
           c.email as "Email",
           c.address as "Địa chỉ",
-          c.city as "Thành phố",
+
           p.name as "Tỉnh/Thành phố",
           ct.name as "Loại khách hàng",
           bt.name as "Loại doanh nghiệp",
