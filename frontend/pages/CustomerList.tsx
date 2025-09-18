@@ -1,0 +1,442 @@
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Plus, Search, Filter, ArrowUpDown, Eye, Pencil, Trash2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { useBackend, useAuth } from "../contexts/AuthContext";
+import { CreateCustomerDialog } from "../components/CreateCustomerDialog";
+import { EditCustomerDialog } from "../components/EditCustomerDialog";
+import { ExportDropdown } from "../components/ExportDropdown";
+import type { Customer } from "~backend/customers/types";
+
+export function CustomerList() {
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState({
+    stageId: "",
+    temperatureId: "",
+    assignedSalespersonId: "",
+    provinceId: "",
+    contactStatusId: "",
+  });
+  const [sortBy, setSortBy] = useState("created");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+
+  const backend = useBackend();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: customersData, isLoading, error, refetch } = useQuery({
+    queryKey: ["customers", page, search, filters, sortBy, sortOrder],
+    queryFn: async () => {
+      try {
+        return await backend.customers.list({
+          page,
+          limit: 20,
+          search: search || undefined,
+          stageId: filters.stageId || undefined,
+          temperatureId: filters.temperatureId || undefined,
+          assignedSalespersonId: filters.assignedSalespersonId || undefined,
+          provinceId: filters.provinceId || undefined,
+          contactStatusId: filters.contactStatusId || undefined,
+          sortBy,
+          sortOrder,
+        });
+      } catch (err) {
+        console.error("Failed to fetch customers:", err);
+        toast({
+          title: "Lỗi",
+          description: "Không thể tải danh sách khách hàng",
+          variant: "destructive",
+        });
+        throw err;
+      }
+    },
+  });
+
+  const { data: masterData } = useQuery({
+    queryKey: ["masterdata"],
+    queryFn: () => backend.masterdata.getAll(),
+    staleTime: 0, // Always fresh data
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => backend.customers.deleteCustomer({ id }),
+    onSuccess: () => {
+      toast({
+        title: "Thành công",
+        description: "Xóa khách hàng thành công",
+      });
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+    },
+    onError: (error: any) => {
+      console.error("Failed to delete customer:", error);
+      toast({
+        title: "Lỗi",
+        description: error.message || "Không thể xóa khách hàng",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSort = (field: string) => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setSortOrder("asc");
+    }
+  };
+
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters(prev => ({ ...prev, [key]: value === "all" ? "" : value }));
+    setPage(1);
+  };
+
+  const getTemperatureBadgeColor = (temp: string) => {
+    switch (temp) {
+      case "Hot": return "destructive";
+      case "Warm": return "secondary";
+      case "Cold": return "outline";
+      default: return "outline";
+    }
+  };
+
+  const canEditCustomer = (customer: Customer) => {
+    return user?.role === "admin" || 
+           (user?.role === "employee" && customer.assignedSalesperson?.id === user.id);
+  };
+
+  const canDeleteCustomer = () => {
+    return user?.role === "admin";
+  };
+
+  const handleDeleteCustomer = (customer: Customer) => {
+    if (window.confirm(`Bạn có chắc chắn muốn xóa khách hàng "${customer.name}"? Hành động này không thể hoàn tác.`)) {
+      deleteMutation.mutate(customer.id);
+    }
+  };
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="text-center">
+          <p className="text-destructive">Không thể tải danh sách khách hàng</p>
+          <Button onClick={() => refetch()} className="mt-2">
+            Thử lại
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-800">Danh sách khách hàng</h1>
+            <p className="text-slate-600 mt-1">
+              {customersData?.total || 0} tổng khách hàng
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <ExportDropdown 
+              filters={{ ...filters, search }}
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+            />
+            <Button onClick={() => setShowCreateDialog(true)} className="btn-gradient">
+              <Plus className="h-4 w-4 mr-2" />
+             Thêm
+            </Button>
+          </div>
+        </div>
+
+      {/* Filters */}
+      <Card className="mb-6 card-modern shadow-lg">
+        <CardHeader>
+          <CardTitle className="flex items-center text-slate-800">
+            <Filter className="h-4 w-4 mr-2" />
+            Lọc
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-400" />
+              <Input
+                placeholder="Tìm kiếm khách hàng..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-8 border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+            
+            <Select value={filters.stageId} onValueChange={(value) => handleFilterChange("stageId", value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Tất cả giai đoạn" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả giai đoạn</SelectItem>
+                {masterData?.stages?.filter((s: any) => s.active).map((stage: any) => (
+                  <SelectItem key={stage.id} value={stage.id}>
+                    {stage.name}
+                  </SelectItem>
+                )) || []}
+              </SelectContent>
+            </Select>
+
+            <Select value={filters.temperatureId} onValueChange={(value) => handleFilterChange("temperatureId", value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Tất cả mức độ" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả mức độ</SelectItem>
+                {masterData?.temperatures?.filter((t: any) => t.active).map((temp: any) => (
+                  <SelectItem key={temp.id} value={temp.id}>
+                    {temp.name}
+                  </SelectItem>
+                )) || []}
+              </SelectContent>
+            </Select>
+
+            <Select value={filters.provinceId} onValueChange={(value) => handleFilterChange("provinceId", value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Tất cả tỉnh" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả tỉnh</SelectItem>
+                {masterData?.provinces?.map((province: any) => (
+                  <SelectItem key={province.id} value={province.id}>
+                    {province.name}
+                  </SelectItem>
+                )) || []}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Customer Table */}
+      <Card className="card-modern shadow-lg">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-slate-50">
+                  <TableHead>
+                    <Button variant="ghost" onClick={() => handleSort("name")} className="h-auto p-0 font-semibold text-slate-700">
+                      Tên
+                      <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </TableHead>
+                  <TableHead>Thông tin liên hệ</TableHead>
+                  <TableHead>Công ty</TableHead>
+                  <TableHead>Sản phẩm</TableHead>
+                  <TableHead>Giai đoạn</TableHead>
+                  <TableHead>Mực độ</TableHead>
+                  <TableHead>Nhân viên</TableHead>
+                  <TableHead>
+                    <Button variant="ghost" onClick={() => handleSort("latest_contact")} className="h-auto p-0">
+                     Liên hệ lần cuối
+                      <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </TableHead>
+                  <TableHead>
+                    <Button variant="ghost" onClick={() => handleSort("created")} className="h-auto p-0">
+                      Tạo
+                      <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </TableHead>
+                  <TableHead className="text-right">Hành động</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={10} className="text-center py-8">
+                      <div className="animate-pulse">Đang tải khách hàng...</div>
+                    </TableCell>
+                  </TableRow>
+                ) : customersData?.customers.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={10} className="text-center py-8">
+                      Không có khách hàng nào...
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  customersData?.customers.map((customer: Customer) => (
+                    <TableRow key={customer.id} className="hover:bg-muted/50">
+                      <TableCell>
+                        <Link 
+                          to={`/customers/${customer.id}`}
+                          className="font-medium text-primary hover:underline"
+                        >
+                          {customer.name}
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          {customer.phone && <div>{customer.phone}</div>}
+                          {customer.email && <div>{customer.email}</div>}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          <div className="font-medium">{customer.companyName}</div>
+                          {customer.province && (
+                            <div className="text-muted-foreground">
+                              {customer.city}, {customer.province.name}
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1 max-w-xs">
+                          {customer.products.slice(0, 2).map(product => (
+                            <Badge key={product.id} variant="secondary" className="font-normal">
+                              {product.name}
+                            </Badge>
+                          ))}
+                          {customer.products.length > 2 && (
+                            <Badge variant="outline">+{customer.products.length - 2} nữa</Badge>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {customer.stage && (
+                          <Badge variant="outline">{customer.stage.name}</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {customer.temperature && (
+                          <Badge variant={getTemperatureBadgeColor(customer.temperature.name)}>
+                            {customer.temperature.name}
+                          </Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {customer.assignedSalesperson?.name}
+                      </TableCell>
+                      <TableCell>
+                        {customer.latestContact ? (
+                          <div className="text-sm">
+                            <div className="font-medium">{customer.latestContact.type}</div>
+                            <div className="text-muted-foreground">
+                              {new Date(customer.latestContact.createdAt).toLocaleDateString()}
+                            </div>
+                            {customer.latestContact.snippet && (
+                              <div className="text-xs text-muted-foreground truncate max-w-32">
+                                {customer.latestContact.snippet}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">Không có liên hệ</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          {new Date(customer.createdAt).toLocaleDateString()}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-1">
+                          <Link to={`/customers/${customer.id}`}>
+                            <Button variant="outline" size="sm" className="h-8 px-2">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                          {canEditCustomer(customer) && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setEditingCustomer(customer)}
+                              className="h-8 px-2"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                          )}
+                          {canDeleteCustomer() && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDeleteCustomer(customer)}
+                              disabled={deleteMutation.isPending}
+                              className="h-8 px-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Pagination */}
+      {customersData && customersData.totalPages > 1 && (
+        <div className="flex justify-center mt-6">
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage(page - 1)}
+              disabled={page <= 1}
+            >
+              Trước
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              Trang {page} của {customersData.totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage(page + 1)}
+              disabled={page >= customersData.totalPages}
+            >
+              Tiếp
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <CreateCustomerDialog
+        open={showCreateDialog}
+        onOpenChange={setShowCreateDialog}
+        onSuccess={() => {
+          refetch();
+          setShowCreateDialog(false);
+        }}
+      />
+
+      {editingCustomer && (
+        <EditCustomerDialog
+          customer={editingCustomer}
+          open={!!editingCustomer}
+          onOpenChange={(open) => !open && setEditingCustomer(null)}
+          onSuccess={() => {
+            refetch();
+            setEditingCustomer(null);
+          }}
+        />
+      )}
+      </div>
+    </div>
+  );
+}
