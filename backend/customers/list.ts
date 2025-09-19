@@ -119,7 +119,11 @@ export const list = api<ListCustomersRequest, ListCustomersResponse>(
         ub.name as updated_by_name,
         lc.type as latest_contact_type,
         lc.created_at as latest_contact_at,
-        COALESCE(lc.outcome, lc.next_step, '') as latest_contact_snippet
+        COALESCE(lc.outcome, lc.next_step, '') as latest_contact_snippet,
+        apt.total_appointments,
+        apt.upcoming_appointments,
+        apt.next_appointment_date,
+        apt.next_appointment_title
       FROM customers c
       LEFT JOIN customer_types ct ON c.customer_type_id = ct.id
       LEFT JOIN business_types bt ON c.business_type_id = bt.id
@@ -139,6 +143,15 @@ export const list = api<ListCustomersRequest, ListCustomersResponse>(
         ORDER BY ch.created_at DESC
         LIMIT 1
       ) lc ON true
+      LEFT JOIN LATERAL (
+        SELECT 
+          COUNT(*) as total_appointments,
+          COUNT(CASE WHEN status = 'scheduled' AND scheduled_at >= NOW() THEN 1 END) as upcoming_appointments,
+          MIN(CASE WHEN status = 'scheduled' AND scheduled_at >= NOW() THEN scheduled_at END) as next_appointment_date,
+          (SELECT title FROM appointments WHERE customer_id = c.id AND status = 'scheduled' AND scheduled_at >= NOW() ORDER BY scheduled_at ASC LIMIT 1) as next_appointment_title
+        FROM appointments a
+        WHERE a.customer_id = c.id
+      ) apt ON true
       ${whereClause}
       ORDER BY ${orderBy}
       LIMIT $${++paramCount} OFFSET $${++paramCount}
@@ -196,6 +209,14 @@ export const list = api<ListCustomersRequest, ListCustomersResponse>(
         createdAt: new Date(row.latest_contact_at),
         snippet: row.latest_contact_snippet || ''
       } : undefined,
+      appointmentInfo: {
+        totalAppointments: parseInt(row.total_appointments) || 0,
+        upcomingAppointments: parseInt(row.upcoming_appointments) || 0,
+        nextAppointment: row.next_appointment_date && row.next_appointment_title ? {
+          date: new Date(row.next_appointment_date),
+          title: row.next_appointment_title
+        } : undefined
+      },
     }));
 
     return {

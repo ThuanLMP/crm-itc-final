@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Filter, ArrowUpDown, Eye, Pencil, Trash2 } from "lucide-react";
+import { Plus, Search, Filter, ArrowUpDown, Eye, Pencil, Trash2, Calendar, Clock, CheckCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useBackend, useAuth } from "../contexts/AuthContext";
 import { CreateCustomerDialog } from "../components/CreateCustomerDialog";
@@ -145,21 +145,27 @@ export function CustomerList() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 lg:mb-8 gap-4">
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold text-slate-800">Danh sách khách hàng</h1>
-            <p className="text-sm lg:text-base text-slate-600 mt-1">
-              {customersData?.total || 0} tổng khách hàng
-            </p>
+            <div className="flex items-center gap-4 text-sm lg:text-base text-slate-600 mt-1">
+              <span>{customersData?.total || 0} tổng khách hàng</span>
+              {customersData?.customers && customersData.customers.filter(c => c.appointmentInfo?.upcomingAppointments && c.appointmentInfo.upcomingAppointments > 0).length > 0 && (
+                <span className="flex items-center gap-1 text-green-600">
+                  <Calendar className="h-4 w-4" />
+                  {customersData.customers.filter(c => c.appointmentInfo?.upcomingAppointments && c.appointmentInfo.upcomingAppointments > 0).length} có lịch hẹn
+                </span>
+              )}
+            </div>
           </div>
           <div className="flex gap-2 lg:gap-3 w-full sm:w-auto">
             <div className="sm:hidden">
               <ExportDropdown 
-                filters={{ ...filters, search }}
+                filters={{ ...filters, search } as any}
                 sortBy={sortBy}
                 sortOrder={sortOrder}
               />
             </div>
             <div className="hidden sm:block">
               <ExportDropdown 
-                filters={{ ...filters, search }}
+                filters={{ ...filters, search } as any}
                 sortBy={sortBy}
                 sortOrder={sortOrder}
               />
@@ -180,7 +186,7 @@ export function CustomerList() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4">
             <div className="relative col-span-1 sm:col-span-2 lg:col-span-1">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-400" />
               <Input
@@ -232,6 +238,18 @@ export function CustomerList() {
                 )) || []}
               </SelectContent>
             </Select>
+
+            <Select value={(filters as any).appointmentStatus || ""} onValueChange={(value) => handleFilterChange("appointmentStatus", value)}>
+              <SelectTrigger className="text-sm lg:text-base">
+                <SelectValue placeholder="Tất cả lịch hẹn" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả lịch hẹn</SelectItem>
+                <SelectItem value="upcoming">Có lịch hẹn sắp tới</SelectItem>
+                <SelectItem value="none">Không có lịch hẹn</SelectItem>
+                <SelectItem value="overdue">Quá hạn liên hệ</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>
@@ -255,6 +273,7 @@ export function CustomerList() {
                     <TableHead>Sản phẩm</TableHead>
                     <TableHead>Giai đoạn</TableHead>
                     <TableHead>Mức độ</TableHead>
+                    <TableHead>Lịch hẹn</TableHead>
                     <TableHead>Nhân viên</TableHead>
                     <TableHead>
                       <Button variant="ghost" onClick={() => handleSort("latest_contact")} className="h-auto p-0">
@@ -274,13 +293,13 @@ export function CustomerList() {
                 <TableBody>
                   {isLoading ? (
                     <TableRow>
-                      <TableCell colSpan={10} className="text-center py-8">
+                      <TableCell colSpan={11} className="text-center py-8">
                         <div className="animate-pulse">Đang tải khách hàng...</div>
                       </TableCell>
                     </TableRow>
                   ) : customersData?.customers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={10} className="text-center py-8">
+                      <TableCell colSpan={11} className="text-center py-8">
                         Không có khách hàng nào...
                       </TableCell>
                     </TableRow>
@@ -334,6 +353,40 @@ export function CustomerList() {
                               {customer.temperature.name}
                             </Badge>
                           )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm space-y-1">
+                            {customer.appointmentInfo?.nextAppointment ? (
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-1 text-green-600">
+                                  <Calendar className="h-3 w-3" />
+                                  <span className="font-medium">
+                                    {new Date(customer.appointmentInfo.nextAppointment.date).toLocaleDateString('vi-VN')}
+                                  </span>
+                                </div>
+                                <div className="text-xs text-muted-foreground truncate max-w-32">
+                                  {customer.appointmentInfo.nextAppointment.title}
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-1 text-muted-foreground">
+                                <Calendar className="h-3 w-3" />
+                                <span className="text-xs">Không có lịch hẹn</span>
+                              </div>
+                            )}
+                            {customer.appointmentInfo && customer.appointmentInfo.totalAppointments > 0 && (
+                              <div className="flex items-center gap-2 text-xs">
+                                <Badge variant="outline" className="text-xs px-1 py-0">
+                                  {customer.appointmentInfo.totalAppointments} tổng
+                                </Badge>
+                                {customer.appointmentInfo.upcomingAppointments > 0 && (
+                                  <Badge variant="secondary" className="text-xs px-1 py-0">
+                                    {customer.appointmentInfo.upcomingAppointments} sắp tới
+                                  </Badge>
+                                )}
+                              </div>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell>
                           {customer.assignedSalesperson?.name}
@@ -497,6 +550,38 @@ export function CustomerList() {
                       ))}
                       {customer.products.length > 2 && (
                         <Badge variant="outline" className="text-xs">+{customer.products.length - 2} nữa</Badge>
+                      )}
+                    </div>
+                  )}
+                  
+                  {customer.appointmentInfo && (
+                    <div className="space-y-1">
+                      {customer.appointmentInfo?.nextAppointment ? (
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1 text-green-600">
+                            <Calendar className="h-3 w-3" />
+                            <span className="text-xs font-medium">
+                              Lịch hẹn tiếp theo: {new Date(customer.appointmentInfo.nextAppointment.date).toLocaleDateString('vi-VN')}
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Calendar className="h-3 w-3" />
+                          <span className="text-xs">Không có lịch hẹn</span>
+                        </div>
+                      )}
+                      {customer.appointmentInfo.totalAppointments > 0 && (
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="text-xs">
+                            {customer.appointmentInfo.totalAppointments} tổng lịch hẹn
+                          </Badge>
+                          {customer.appointmentInfo.upcomingAppointments > 0 && (
+                            <Badge variant="secondary" className="text-xs">
+                              {customer.appointmentInfo.upcomingAppointments} sắp tới
+                            </Badge>
+                          )}
+                        </div>
                       )}
                     </div>
                   )}

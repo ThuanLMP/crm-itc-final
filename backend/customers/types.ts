@@ -26,6 +26,14 @@ export interface Customer {
     createdAt: Date;
     snippet: string;
   };
+  appointmentInfo?: {
+    totalAppointments: number;
+    upcomingAppointments: number;
+    nextAppointment?: {
+      date: Date;
+      title: string;
+    };
+  };
 }
 
 export interface CreateCustomerRequest {
