@@ -61,7 +61,7 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
       });
     },
     onError: (error: any) => {
-      console.error("Failed to create appointment:", error);
+      console.error("Lỗi khi tạo lịch hẹn:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to create appointment",
