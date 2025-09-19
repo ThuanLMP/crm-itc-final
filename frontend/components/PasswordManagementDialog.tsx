@@ -52,8 +52,8 @@ export function PasswordManagementDialog({
     mutationFn: () => backend.auth.resetPassword({ userId }),
     onSuccess: (data) => {
       toast({
-        title: "Success",
-        description: `Password reset successfully. New password: ${data.newPassword}`,
+        title: "Thành công",
+        description: `Đặt lại mật khẩu thành công, mật khẩu: ${data.newPassword}`,
         duration: 10000, // Show for 10 seconds
       });
       onSuccess();
@@ -61,8 +61,8 @@ export function PasswordManagementDialog({
     onError: (error: any) => {
       console.error("Failed to reset password:", error);
       toast({
-        title: "Error",
-        description: error.message || "Failed to reset password",
+        title: "Lỗi",
+        description: error.message || "Lỗi đặt lại mật khẩu",
         variant: "destructive",
       });
     },
