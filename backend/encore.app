@@ -1,1 +1,4 @@
-{"id": "leap-app-eui2", "lang": "typescript"}
+{
+	"id": "crm-itc-demo-mf8i",
+	"lang": "typescript",
+}
