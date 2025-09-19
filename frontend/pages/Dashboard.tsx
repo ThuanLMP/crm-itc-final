@@ -234,7 +234,7 @@ export function Dashboard() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{apt.title}</p>
                       <p className="text-xs lg:text-sm text-muted-foreground">
-                        With <span className="font-semibold text-primary">{apt.customerName}</span>
+                        cùng <span className="font-semibold text-primary">{apt.customerName}</span>
                       </p>
                       <p className="text-xs text-muted-foreground">{new Date(apt.scheduledAt).toLocaleString()}</p>
                     </div>
