@@ -7,12 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Filter, ArrowUpDown, Eye, Pencil, Trash2, Calendar, Clock, CheckCircle } from "lucide-react";
+import { Plus, Search, Filter, ArrowUpDown, Eye, Pencil, Trash2, Calendar, Clock, CheckCircle, Upload } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useBackend, useAuth } from "../contexts/AuthContext";
 import { CreateCustomerDialog } from "../components/CreateCustomerDialog";
 import { EditCustomerDialog } from "../components/EditCustomerDialog";
 import { ExportDropdown } from "../components/ExportDropdown";
+import ImportCustomersDialog from "../components/ImportCustomersDialog";
 import type { Customer } from "~backend/customers/types";
 
 export function CustomerList() {
@@ -32,6 +33,7 @@ export function CustomerList() {
   const [sortBy, setSortBy] = useState("created");
   const [sortOrder, setSortOrder] = useState("desc");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showImportDialog, setShowImportDialog] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
 
   const backend = useBackend();
@@ -287,6 +289,14 @@ export function CustomerList() {
                 sortOrder={sortOrder}
               />
             </div>
+            <Button 
+              onClick={() => setShowImportDialog(true)} 
+              variant="outline" 
+              className="flex-1 sm:flex-initial"
+            >
+              <Upload className="h-4 w-4 mr-2" />
+              <span className="sm:inline">Import Excel</span>
+            </Button>
             <Button onClick={() => setShowCreateDialog(true)} className="btn-gradient flex-1 sm:flex-initial">
               <Plus className="h-4 w-4 mr-2" />
               <span className="sm:inline">Thêm</span>
@@ -773,6 +783,14 @@ export function CustomerList() {
           }}
         />
       )}
+
+      <ImportCustomersDialog
+        open={showImportDialog}
+        onOpenChange={setShowImportDialog}
+        onImportComplete={() => {
+          refetch();
+        }}
+      />
       </div>
     </div>
   );

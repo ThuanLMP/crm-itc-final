@@ -103,3 +103,16 @@ export interface ListCustomersResponse {
   limit: number;
   totalPages: number;
 }
+
+export interface ImportCustomersRequest {
+  fileContent: string;
+}
+
+export interface ImportCustomersResponse {
+  imported: number;
+  failed: number;
+  errors: Array<{
+    row: number;
+    error: string;
+  }>;
+}

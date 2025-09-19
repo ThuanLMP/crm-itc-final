@@ -316,6 +316,7 @@ import { create as api_customers_create_create } from "~backend/customers/create
 import { deleteCustomer as api_customers_delete_deleteCustomer } from "~backend/customers/delete";
 import { exportCustomers as api_customers_export_exportCustomers } from "~backend/customers/export";
 import { get as api_customers_get_get } from "~backend/customers/get";
+import { importCustomers as api_customers_import_importCustomers } from "~backend/customers/import";
 import { list as api_customers_list_list } from "~backend/customers/list";
 import { update as api_customers_update_update } from "~backend/customers/update";
 
@@ -330,6 +331,7 @@ export namespace customers {
             this.deleteCustomer = this.deleteCustomer.bind(this)
             this.exportCustomers = this.exportCustomers.bind(this)
             this.get = this.get.bind(this)
+            this.importCustomers = this.importCustomers.bind(this)
             this.list = this.list.bind(this)
             this.update = this.update.bind(this)
         }
@@ -368,6 +370,12 @@ export namespace customers {
             // Now make the actual call to the API
             const resp = await this.baseClient.callTypedAPI(`/customers/${encodeURIComponent(params.id)}`, {method: "GET", body: undefined})
             return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_customers_get_get>
+        }
+
+        public async importCustomers(params: RequestType<typeof api_customers_import_importCustomers>): Promise<ResponseType<typeof api_customers_import_importCustomers>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/import`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_customers_import_importCustomers>
         }
 
         /**

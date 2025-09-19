@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
-    "encore.dev": "^1.50.0"
+    "encore.dev": "^1.50.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "typescript": "^5.9.2",
