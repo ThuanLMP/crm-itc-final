@@ -74,7 +74,7 @@ export function PasswordManagementDialog({
       if (!newPassword || newPassword.length < 6) {
         toast({
           title: "Error",
-          description: "Password must be at least 6 characters long",
+          description: "Mật khẩu cần ít nhất 6 ký tự",
           variant: "destructive",
         });
         return;
