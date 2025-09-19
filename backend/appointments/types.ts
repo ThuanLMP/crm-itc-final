@@ -40,6 +40,7 @@ export interface ListAppointmentsRequest {
   status?: string;
   fromDate?: Date;
   toDate?: Date;
+  customerSearch?: string;
   page?: number;
   limit?: number;
 }
