@@ -145,8 +145,8 @@ export function PasswordManagementDialog({
               className="btn-gradient"
             >
               {changePasswordMutation.isPending || resetPasswordMutation.isPending 
-                ? "Processing..." 
-                : action === "change" ? "Change Password" : "Reset Password"
+                ? "Đang xử lý..." 
+                : action === "change" ? "Đổi mật khẩu" : "Đặt lại mật khẩu"
               }
             </Button>
           </div>
