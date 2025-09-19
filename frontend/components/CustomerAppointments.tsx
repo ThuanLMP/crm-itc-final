@@ -36,7 +36,7 @@ export function CustomerAppointments({ customerId, customerName }: CustomerAppoi
         const params: any = { customerId };
         
         if (statusFilter) {
-          params.status = statusFilter;
+          params.status = statusFilter === "all" ? "" : statusFilter;
         }
         
         if (dateFilter === "upcoming") {
