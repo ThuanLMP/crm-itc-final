@@ -337,7 +337,7 @@ export function CustomerList() {
                 <SelectValue placeholder={filterType ? "Chọn giá trị" : "Chọn loại lọc trước"} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tất cả</SelectItem>
+                <SelectItem value="all">Tất cả</SelectItem>
                 {getFilterOptions().map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
