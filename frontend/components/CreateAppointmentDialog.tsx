@@ -127,7 +127,7 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="scheduledAt">Scheduled At *</Label>
+              <Label htmlFor="scheduledAt">Lịch hẹn *</Label>
               <Input
                 id="scheduledAt"
                 type="datetime-local"
