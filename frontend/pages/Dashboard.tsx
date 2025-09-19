@@ -211,7 +211,7 @@ export function Dashboard() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{activity.subject || `Contact (${activity.type})`}</p>
                       <p className="text-xs lg:text-sm text-muted-foreground">
-                        With <span className="font-semibold text-primary">{activity.customerName}</span> by {activity.createdBy}
+                        Cùng <span className="font-semibold text-primary">{activity.customerName}</span> bởi {activity.createdBy}
                       </p>
                       <p className="text-xs text-muted-foreground">{new Date(activity.createdAt).toLocaleString()}</p>
                     </div>
