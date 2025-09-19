@@ -141,7 +141,7 @@ export function CustomerList() {
 
   return (
     <div className="p-4 lg:p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
+      <div className="mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 lg:mb-8 gap-4">
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold text-slate-800">Danh sách khách hàng</h1>
