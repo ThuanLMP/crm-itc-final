@@ -52,13 +52,13 @@ export const create = api(
       INSERT INTO customers (
         name, phone, email, address, company_name,
         customer_type_id, business_type_id, company_size_id,
-        province_id, city, lead_source_id, assigned_salesperson_id,
+        province_id, lead_source_id, assigned_salesperson_id,
         stage_id, temperature_id, contact_status_id,
         customer_feedback, notes, created_by, updated_by
       ) VALUES (
         ${req.name}, ${req.phone || null}, ${req.email || null}, ${req.address || null}, ${req.companyName || null},
         ${toUuidOrNull(req.customerTypeId)}, ${toUuidOrNull(req.businessTypeId)}, ${toUuidOrNull(req.companySizeId)},
-        ${toUuidOrNull(req.provinceId)}, ${req.city || null}, ${toUuidOrNull(req.leadSourceId)}, ${assignedSalespersonId},
+        ${toUuidOrNull(req.provinceId)}, ${toUuidOrNull(req.leadSourceId)}, ${assignedSalespersonId},
         ${toUuidOrNull(req.stageId)}, ${toUuidOrNull(req.temperatureId)}, ${toUuidOrNull(req.contactStatusId)},
         ${req.customerFeedback || null}, ${req.notes || null}, ${auth.userID}, ${auth.userID}
       )
@@ -136,7 +136,7 @@ export const create = api(
       businessType: result!.business_type_name ? { id: result!.business_type_id, name: result!.business_type_name } : undefined,
       companySize: result!.company_size_name ? { id: result!.company_size_id, name: result!.company_size_name } : undefined,
       province: result!.province_name ? { id: result!.province_id, name: result!.province_name } : undefined,
-      city: result!.city,
+
       leadSource: result!.lead_source_name ? { id: result!.lead_source_id, name: result!.lead_source_name } : undefined,
       assignedSalesperson: result!.salesperson_name ? { id: result!.assigned_salesperson_id, name: result!.salesperson_name } : undefined,
       stage: result!.stage_name ? { id: result!.stage_id, name: result!.stage_name } : undefined,

@@ -164,9 +164,9 @@ export function CustomerDetail() {
                   <MapPin className="h-4 w-4 mr-3 mt-0.5 text-slate-500" />
                   <div>
                     <div>{customer.address}</div>
-                    {customer.city && customer.province && (
+                    {customer.province && (
                       <div className="text-sm text-slate-500">
-                        {customer.city}, {customer.province.name}
+                        {customer.province.name}
                       </div>
                     )}
                   </div>

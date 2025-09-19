@@ -240,7 +240,7 @@ export function CustomerList() {
       <div className="hidden lg:block">
         <Card className="card-modern shadow-lg">
           <CardContent className="p-0">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto relative">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50">
@@ -254,7 +254,7 @@ export function CustomerList() {
                     <TableHead>Công ty</TableHead>
                     <TableHead>Sản phẩm</TableHead>
                     <TableHead>Giai đoạn</TableHead>
-                    <TableHead>Mực độ</TableHead>
+                    <TableHead>Mức độ</TableHead>
                     <TableHead>Nhân viên</TableHead>
                     <TableHead>
                       <Button variant="ghost" onClick={() => handleSort("latest_contact")} className="h-auto p-0">
@@ -268,7 +268,7 @@ export function CustomerList() {
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                       </Button>
                     </TableHead>
-                    <TableHead className="text-right">Hành động</TableHead>
+                    <TableHead className="text-right sticky right-0 bg-white z-10 border-l border-slate-200">Hành động</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -306,7 +306,7 @@ export function CustomerList() {
                             <div className="font-medium">{customer.companyName}</div>
                             {customer.province && (
                               <div className="text-muted-foreground">
-                                {customer.city}, {customer.province.name}
+                                {customer.province.name}
                               </div>
                             )}
                           </div>
@@ -360,7 +360,7 @@ export function CustomerList() {
                             {new Date(customer.createdAt).toLocaleDateString()}
                           </div>
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-right sticky right-0 bg-white z-10 border-l border-slate-200">
                           <div className="flex justify-end gap-1">
                             <Link to={`/customers/${customer.id}`}>
                               <Button variant="outline" size="sm" className="h-8 px-2">
@@ -473,7 +473,7 @@ export function CustomerList() {
                   
                   {customer.province && (
                     <p className="text-muted-foreground">
-                      {customer.city}, {customer.province.name}
+                      {customer.province.name}
                     </p>
                   )}
                   

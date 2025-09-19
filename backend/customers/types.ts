@@ -9,7 +9,6 @@ export interface Customer {
   businessType?: { id: string; name: string };
   companySize?: { id: string; name: string };
   province?: { id: string; name: string };
-  city?: string;
   leadSource?: { id: string; name: string };
   assignedSalesperson?: { id: string; name: string };
   stage?: { id: string; name: string };
@@ -39,7 +38,7 @@ export interface CreateCustomerRequest {
   businessTypeId?: string;
   companySizeId?: string;
   provinceId?: string;
-  city?: string;
+
   leadSourceId?: string;
   assignedSalespersonId?: string;
   stageId?: string;
@@ -61,7 +60,7 @@ export interface UpdateCustomerRequest {
   businessTypeId?: string;
   companySizeId?: string;
   provinceId?: string;
-  city?: string;
+
   leadSourceId?: string;
   assignedSalespersonId?: string;
   stageId?: string;

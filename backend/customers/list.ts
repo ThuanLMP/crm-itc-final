@@ -178,7 +178,7 @@ export const list = api<ListCustomersRequest, ListCustomersResponse>(
       businessType: row.business_type_name ? { id: row.business_type_id, name: row.business_type_name } : undefined,
       companySize: row.company_size_name ? { id: row.company_size_id, name: row.company_size_name } : undefined,
       province: row.province_name ? { id: row.province_id, name: row.province_name } : undefined,
-      city: row.city,
+
       leadSource: row.lead_source_name ? { id: row.lead_source_id, name: row.lead_source_name } : undefined,
       assignedSalesperson: row.salesperson_name ? { id: row.assigned_salesperson_id, name: row.salesperson_name } : undefined,
       stage: row.stage_name ? { id: row.stage_id, name: row.stage_name } : undefined,

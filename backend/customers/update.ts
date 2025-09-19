@@ -71,7 +71,6 @@ export const update = api(
         business_type_id = ${toUuidOrNull(req.businessTypeId)},
         company_size_id = ${toUuidOrNull(req.companySizeId)},
         province_id = ${toUuidOrNull(req.provinceId)},
-        city = ${req.city || null},
         lead_source_id = ${toUuidOrNull(req.leadSourceId)},
         assigned_salesperson_id = ${assignedSalespersonId},
         stage_id = ${toUuidOrNull(req.stageId)},
@@ -161,7 +160,7 @@ export const update = api(
       businessType: result!.business_type_name ? { id: result!.business_type_id, name: result!.business_type_name } : undefined,
       companySize: result!.company_size_name ? { id: result!.company_size_id, name: result!.company_size_name } : undefined,
       province: result!.province_name ? { id: result!.province_id, name: result!.province_name } : undefined,
-      city: result!.city,
+
       leadSource: result!.lead_source_name ? { id: result!.lead_source_id, name: result!.lead_source_name } : undefined,
       assignedSalesperson: result!.salesperson_name ? { id: result!.assigned_salesperson_id, name: result!.salesperson_name } : undefined,
       stage: result!.stage_name ? { id: result!.stage_id, name: result!.stage_name } : undefined,

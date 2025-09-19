@@ -30,7 +30,6 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
     businessTypeId: customer.businessType?.id || "",
     companySizeId: customer.companySize?.id || "",
     provinceId: customer.province?.id || "",
-    city: customer.city || "",
     leadSourceId: customer.leadSource?.id || "",
     assignedSalespersonId: customer.assignedSalesperson?.id || "",
     stageId: customer.stage?.id || "",
@@ -71,7 +70,6 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
       businessTypeId: customer.businessType?.id || "",
       companySizeId: customer.companySize?.id || "",
       provinceId: customer.province?.id || "",
-      city: customer.city || "",
       leadSourceId: customer.leadSource?.id || "",
       assignedSalespersonId: customer.assignedSalesperson?.id || "",
       stageId: customer.stage?.id || "",
@@ -101,7 +99,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
         email: data.email || undefined,
         address: data.address || undefined,
         companyName: data.companyName || undefined,
-        city: data.city || undefined,
+
         customerFeedback: data.customerFeedback || undefined,
         notes: data.notes || undefined,
       };
@@ -218,31 +216,20 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
             />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
-            <div>
-              <Label className="text-sm lg:text-base">Tỉnh</Label>
-              <Select value={formData.provinceId} onValueChange={(value) => handleSelectChange("provinceId", value)}>
-                <SelectTrigger className="w-full text-sm lg:text-base">
-                  <SelectValue placeholder="Chọn tỉnh" />
-                </SelectTrigger>
-                <SelectContent>
-                  {masterData?.provinces?.map((province: any) => (
-                    <SelectItem key={province.id} value={province.id}>
-                      {province.name}
-                    </SelectItem>
-                  )) || []}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="city" className="text-sm lg:text-base">Thành phố</Label>
-              <Input
-                id="city"
-                value={formData.city}
-                onChange={(e) => handleInputChange("city", e.target.value)}
-                className="text-sm lg:text-base"
-              />
-            </div>
+          <div>
+            <Label className="text-sm lg:text-base">Tỉnh/Thành phố</Label>
+            <Select value={formData.provinceId} onValueChange={(value) => handleSelectChange("provinceId", value)}>
+              <SelectTrigger className="w-full text-sm lg:text-base">
+                <SelectValue placeholder="Chọn tỉnh/thành phố" />
+              </SelectTrigger>
+              <SelectContent>
+                {masterData?.provinces?.map((province: any) => (
+                  <SelectItem key={province.id} value={province.id}>
+                    {province.name}
+                  </SelectItem>
+                )) || []}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
