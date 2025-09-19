@@ -43,21 +43,21 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8">
       <Card className="w-full max-w-md shadow-xl border-0">
-        <CardHeader className="text-center pb-6">
-          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mb-4">
-            <Users className="h-8 w-8 text-white" />
+        <CardHeader className="text-center pb-4 lg:pb-6">
+          <div className="mx-auto w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mb-3 lg:mb-4">
+            <Users className="h-6 w-6 lg:h-8 lg:w-8 text-white" />
           </div>
-          <CardTitle className="text-2xl font-bold text-slate-800">Đăng nhập CRM</CardTitle>
-          <CardDescription className="text-slate-600">
+          <CardTitle className="text-xl lg:text-2xl font-bold text-slate-800">Đăng nhập CRM</CardTitle>
+          <CardDescription className="text-sm lg:text-base text-slate-600">
             Nhập thông tin đăng nhập để truy cập hệ thống
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-700 font-medium">Email</Label>
+        <CardContent className="space-y-4 lg:space-y-6 p-4 lg:p-6">
+          <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-5">
+            <div className="space-y-1.5 lg:space-y-2">
+              <Label htmlFor="email" className="text-sm lg:text-base text-slate-700 font-medium">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -65,11 +65,11 @@ export function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@crm.com"
                 required
-                className="h-12 border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                className="h-11 lg:h-12 text-sm lg:text-base border-slate-300 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-slate-700 font-medium">Mật khẩu</Label>
+            <div className="space-y-1.5 lg:space-y-2">
+              <Label htmlFor="password" className="text-sm lg:text-base text-slate-700 font-medium">Mật khẩu</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -78,13 +78,13 @@ export function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Nhập mật khẩu"
                   required
-                  className="h-12 pr-12 border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                  className="h-11 lg:h-12 pr-12 text-sm lg:text-base border-slate-300 focus:border-blue-500 focus:ring-blue-500"
                 />
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-transparent"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 lg:h-8 lg:w-8 p-0 hover:bg-transparent"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
@@ -97,25 +97,25 @@ export function Login() {
             </div>
             <Button 
               type="submit" 
-              className="w-full h-12 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200" 
+              className="w-full h-11 lg:h-12 text-sm lg:text-base bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200" 
               disabled={isLoading}
             >
               {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
             </Button>
           </form>
-          <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
-            <h4 className="text-sm font-medium text-slate-700 mb-3">Tài khoản demo:</h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between items-center p-2 bg-white rounded border">
+          <div className="mt-4 lg:mt-6 p-3 lg:p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <h4 className="text-xs lg:text-sm font-medium text-slate-700 mb-2 lg:mb-3">Tài khoản demo:</h4>
+            <div className="space-y-2 text-xs lg:text-sm">
+              <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center p-2 bg-white rounded border gap-1 lg:gap-0">
                 <span className="text-slate-600">Quản trị viên:</span>
-                <span className="font-mono text-blue-600">admin@crm.com / admin123</span>
+                <span className="font-mono text-blue-600 text-xs lg:text-sm">admin@crm.com / admin123</span>
               </div>
-              <div className="flex justify-between items-center p-2 bg-white rounded border">
+              <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center p-2 bg-white rounded border gap-1 lg:gap-0">
                 <span className="text-slate-600">Nhân viên:</span>
-                <span className="font-mono text-green-600">employee@crm.com / employee123</span>
+                <span className="font-mono text-green-600 text-xs lg:text-sm">employee@crm.com / employee123</span>
               </div>
             </div>
-            <p className="text-xs text-slate-500 mt-3">
+            <p className="text-xs text-slate-500 mt-2 lg:mt-3">
               📝 Tài khoản admin đã được điền sẵn, nhấn "Đăng nhập" để vào hệ thống
             </p>
           </div>

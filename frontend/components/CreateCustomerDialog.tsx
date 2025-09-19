@@ -152,67 +152,72 @@ export function CreateCustomerDialog({ open, onOpenChange, onSuccess }: CreateCu
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl min-w-3xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl w-[95vw] lg:min-w-3xl max-h-[85vh] lg:max-h-[80vh] overflow-y-auto p-4 lg:p-6">
         <DialogHeader>
-          <DialogTitle>Tạo khách hàng mới</DialogTitle>
+          <DialogTitle className="text-lg lg:text-xl">Tạo khách hàng mới</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-3 lg:space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
             <div>
-              <Label htmlFor="name">Tên khách hàng *</Label>
+              <Label htmlFor="name" className="text-sm lg:text-base">Tên khách hàng *</Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 required
+                className="text-sm lg:text-base"
               />
             </div>
             <div>
-              <Label htmlFor="companyName">Tên công ty</Label>
+              <Label htmlFor="companyName" className="text-sm lg:text-base">Tên công ty</Label>
               <Input
                 id="companyName"
                 value={formData.companyName}
                 onChange={(e) => handleInputChange("companyName", e.target.value)}
+                className="text-sm lg:text-base"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
             <div>
-              <Label htmlFor="phone">Điện thoại</Label>
+              <Label htmlFor="phone" className="text-sm lg:text-base">Điện thoại</Label>
               <Input
                 id="phone"
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => handleInputChange("phone", e.target.value)}
+                className="text-sm lg:text-base"
               />
             </div>
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-sm lg:text-base">Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
+                className="text-sm lg:text-base"
               />
             </div>
           </div>
 
           <div>
-            <Label htmlFor="address">Địa chỉ</Label>
+            <Label htmlFor="address" className="text-sm lg:text-base">Địa chỉ</Label>
             <Input
               id="address"
               value={formData.address}
               onChange={(e) => handleInputChange("address", e.target.value)}
+              className="text-sm lg:text-base"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
             <div>
-              <Label>Tỉnh/Thành phố</Label>
+              <Label className="text-sm lg:text-base">Tỉnh/Thành phố</Label>
               <Select value={formData.provinceId} onValueChange={(value) => handleSelectChange("provinceId", value)}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full text-sm lg:text-base">
                   <SelectValue placeholder="Chọn tỉnh/thành phố" />
                 </SelectTrigger>
                 <SelectContent>
@@ -225,20 +230,21 @@ export function CreateCustomerDialog({ open, onOpenChange, onSuccess }: CreateCu
               </Select>
             </div>
             <div>
-              <Label htmlFor="city">Thành phố</Label>
+              <Label htmlFor="city" className="text-sm lg:text-base">Thành phố</Label>
               <Input
                 id="city"
                 value={formData.city}
                 onChange={(e) => handleInputChange("city", e.target.value)}
+                className="text-sm lg:text-base"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
             <div>
-              <Label>Loại khách hàng</Label>
+              <Label className="text-sm lg:text-base">Loại khách hàng</Label>
               <Select value={formData.customerTypeId} onValueChange={(value) => handleSelectChange("customerTypeId", value)}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full text-sm lg:text-base">
                   <SelectValue placeholder="Chọn loại khách hàng" />
                 </SelectTrigger>
                 <SelectContent>
@@ -251,9 +257,9 @@ export function CreateCustomerDialog({ open, onOpenChange, onSuccess }: CreateCu
               </Select>
             </div>
             <div>
-              <Label>Loại doanh nghiệp</Label>
+              <Label className="text-sm lg:text-base">Loại doanh nghiệp</Label>
               <Select value={formData.businessTypeId} onValueChange={(value) => handleSelectChange("businessTypeId", value)}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full text-sm lg:text-base">
                   <SelectValue placeholder="Chọn loại doanh nghiệp" />
                 </SelectTrigger>
                 <SelectContent>
@@ -267,11 +273,11 @@ export function CreateCustomerDialog({ open, onOpenChange, onSuccess }: CreateCu
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
             <div>
-              <Label>Giai đoạn</Label>
+              <Label className="text-sm lg:text-base">Giai đoạn</Label>
               <Select value={formData.stageId} onValueChange={(value) => handleSelectChange("stageId", value)}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full text-sm lg:text-base">
                   <SelectValue placeholder="Chọn giai đoạn" />
                 </SelectTrigger>
                 <SelectContent>
@@ -284,9 +290,9 @@ export function CreateCustomerDialog({ open, onOpenChange, onSuccess }: CreateCu
               </Select>
             </div>
             <div>
-              <Label>Mức độ</Label>
+              <Label className="text-sm lg:text-base">Mức độ</Label>
               <Select value={formData.temperatureId} onValueChange={(value) => handleSelectChange("temperatureId", value)}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full text-sm lg:text-base">
                   <SelectValue placeholder="Chọn mức độ" />
                 </SelectTrigger>
                 <SelectContent>
@@ -303,9 +309,9 @@ export function CreateCustomerDialog({ open, onOpenChange, onSuccess }: CreateCu
           {/* Assign Employee - Only visible to admins */}
           {user?.role === "admin" && (
             <div>
-              <Label>Phân công cho nhân viên</Label>
+              <Label className="text-sm lg:text-base">Phân công cho nhân viên</Label>
               <Select value={formData.assignedSalespersonId} onValueChange={(value) => handleSelectChange("assignedSalespersonId", value)}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full text-sm lg:text-base">
                   <SelectValue placeholder="Chọn nhân viên (mặc định là bạn)" />
                 </SelectTrigger>
                 <SelectContent>
@@ -320,8 +326,8 @@ export function CreateCustomerDialog({ open, onOpenChange, onSuccess }: CreateCu
           )}
 
           <div>
-            <Label>Sản phẩm quan tâm</Label>
-            <div className="mt-2 grid grid-cols-2 gap-2 rounded-lg border p-4">
+            <Label className="text-sm lg:text-base">Sản phẩm quan tâm</Label>
+            <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2 rounded-lg border p-3 lg:p-4 max-h-32 lg:max-h-40 overflow-y-auto">
               {masterData?.products?.filter((p: any) => p.active).map((product: any) => (
                 <div key={product.id} className="flex items-center space-x-2">
                   <Checkbox
@@ -331,7 +337,7 @@ export function CreateCustomerDialog({ open, onOpenChange, onSuccess }: CreateCu
                   />
                   <label
                     htmlFor={`product-${product.id}`}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    className="text-xs lg:text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
                     {product.name}
                   </label>
@@ -341,20 +347,21 @@ export function CreateCustomerDialog({ open, onOpenChange, onSuccess }: CreateCu
           </div>
 
           <div>
-            <Label htmlFor="notes">Ghi chú</Label>
+            <Label htmlFor="notes" className="text-sm lg:text-base">Ghi chú</Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => handleInputChange("notes", e.target.value)}
               rows={3}
+              className="text-sm lg:text-base"
             />
           </div>
 
-          <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-Hủy
+          <div className="flex flex-col sm:flex-row justify-end gap-2 lg:gap-3 pt-2">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="text-sm lg:text-base">
+              Hủy
             </Button>
-            <Button type="submit" disabled={createMutation.isPending}>
+            <Button type="submit" disabled={createMutation.isPending} className="text-sm lg:text-base">
               {createMutation.isPending ? "Đang tạo..." : "Tạo khách hàng"}
             </Button>
           </div>

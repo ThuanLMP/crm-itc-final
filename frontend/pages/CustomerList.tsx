@@ -140,50 +140,59 @@ export function CustomerList() {
   }
 
   return (
-    <div className="p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <div className="p-4 lg:p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 lg:mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-800">Danh sách khách hàng</h1>
-            <p className="text-slate-600 mt-1">
+            <h1 className="text-2xl lg:text-3xl font-bold text-slate-800">Danh sách khách hàng</h1>
+            <p className="text-sm lg:text-base text-slate-600 mt-1">
               {customersData?.total || 0} tổng khách hàng
             </p>
           </div>
-          <div className="flex gap-3">
-            <ExportDropdown 
-              filters={{ ...filters, search }}
-              sortBy={sortBy}
-              sortOrder={sortOrder}
-            />
-            <Button onClick={() => setShowCreateDialog(true)} className="btn-gradient">
+          <div className="flex gap-2 lg:gap-3 w-full sm:w-auto">
+            <div className="sm:hidden">
+              <ExportDropdown 
+                filters={{ ...filters, search }}
+                sortBy={sortBy}
+                sortOrder={sortOrder}
+              />
+            </div>
+            <div className="hidden sm:block">
+              <ExportDropdown 
+                filters={{ ...filters, search }}
+                sortBy={sortBy}
+                sortOrder={sortOrder}
+              />
+            </div>
+            <Button onClick={() => setShowCreateDialog(true)} className="btn-gradient flex-1 sm:flex-initial">
               <Plus className="h-4 w-4 mr-2" />
-             Thêm
+              <span className="sm:inline">Thêm</span>
             </Button>
           </div>
         </div>
 
       {/* Filters */}
-      <Card className="mb-6 card-modern shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center text-slate-800">
+      <Card className="mb-4 lg:mb-6 card-modern shadow-lg">
+        <CardHeader className="pb-3 lg:pb-4">
+          <CardTitle className="flex items-center text-slate-800 text-sm lg:text-base">
             <Filter className="h-4 w-4 mr-2" />
             Lọc
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="relative">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+            <div className="relative col-span-1 sm:col-span-2 lg:col-span-1">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-400" />
               <Input
                 placeholder="Tìm kiếm khách hàng..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-8 border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                className="pl-8 border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-sm lg:text-base"
               />
             </div>
             
             <Select value={filters.stageId} onValueChange={(value) => handleFilterChange("stageId", value)}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm lg:text-base">
                 <SelectValue placeholder="Tất cả giai đoạn" />
               </SelectTrigger>
               <SelectContent>
@@ -197,7 +206,7 @@ export function CustomerList() {
             </Select>
 
             <Select value={filters.temperatureId} onValueChange={(value) => handleFilterChange("temperatureId", value)}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm lg:text-base">
                 <SelectValue placeholder="Tất cả mức độ" />
               </SelectTrigger>
               <SelectContent>
@@ -211,7 +220,7 @@ export function CustomerList() {
             </Select>
 
             <Select value={filters.provinceId} onValueChange={(value) => handleFilterChange("provinceId", value)}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm lg:text-base">
                 <SelectValue placeholder="Tất cả tỉnh" />
               </SelectTrigger>
               <SelectContent>
@@ -227,181 +236,304 @@ export function CustomerList() {
         </CardContent>
       </Card>
 
-      {/* Customer Table */}
-      <Card className="card-modern shadow-lg">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-slate-50">
-                  <TableHead>
-                    <Button variant="ghost" onClick={() => handleSort("name")} className="h-auto p-0 font-semibold text-slate-700">
-                      Tên
-                      <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                  </TableHead>
-                  <TableHead>Thông tin liên hệ</TableHead>
-                  <TableHead>Công ty</TableHead>
-                  <TableHead>Sản phẩm</TableHead>
-                  <TableHead>Giai đoạn</TableHead>
-                  <TableHead>Mực độ</TableHead>
-                  <TableHead>Nhân viên</TableHead>
-                  <TableHead>
-                    <Button variant="ghost" onClick={() => handleSort("latest_contact")} className="h-auto p-0">
-                     Liên hệ lần cuối
-                      <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                  </TableHead>
-                  <TableHead>
-                    <Button variant="ghost" onClick={() => handleSort("created")} className="h-auto p-0">
-                      Tạo
-                      <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                  </TableHead>
-                  <TableHead className="text-right">Hành động</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={10} className="text-center py-8">
-                      <div className="animate-pulse">Đang tải khách hàng...</div>
-                    </TableCell>
+      {/* Desktop Table View */}
+      <div className="hidden lg:block">
+        <Card className="card-modern shadow-lg">
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-slate-50">
+                    <TableHead>
+                      <Button variant="ghost" onClick={() => handleSort("name")} className="h-auto p-0 font-semibold text-slate-700">
+                        Tên
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </TableHead>
+                    <TableHead>Thông tin liên hệ</TableHead>
+                    <TableHead>Công ty</TableHead>
+                    <TableHead>Sản phẩm</TableHead>
+                    <TableHead>Giai đoạn</TableHead>
+                    <TableHead>Mực độ</TableHead>
+                    <TableHead>Nhân viên</TableHead>
+                    <TableHead>
+                      <Button variant="ghost" onClick={() => handleSort("latest_contact")} className="h-auto p-0">
+                       Liên hệ lần cuối
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </TableHead>
+                    <TableHead>
+                      <Button variant="ghost" onClick={() => handleSort("created")} className="h-auto p-0">
+                        Tạo
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </TableHead>
+                    <TableHead className="text-right">Hành động</TableHead>
                   </TableRow>
-                ) : customersData?.customers.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={10} className="text-center py-8">
-                      Không có khách hàng nào...
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  customersData?.customers.map((customer: Customer) => (
-                    <TableRow key={customer.id} className="hover:bg-muted/50">
-                      <TableCell>
-                        <Link 
-                          to={`/customers/${customer.id}`}
-                          className="font-medium text-primary hover:underline"
-                        >
-                          {customer.name}
-                        </Link>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={10} className="text-center py-8">
+                        <div className="animate-pulse">Đang tải khách hàng...</div>
                       </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          {customer.phone && <div>{customer.phone}</div>}
-                          {customer.email && <div>{customer.email}</div>}
-                        </div>
+                    </TableRow>
+                  ) : customersData?.customers.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={10} className="text-center py-8">
+                        Không có khách hàng nào...
                       </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          <div className="font-medium">{customer.companyName}</div>
-                          {customer.province && (
-                            <div className="text-muted-foreground">
-                              {customer.city}, {customer.province.name}
-                            </div>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1 max-w-xs">
-                          {customer.products.slice(0, 2).map(product => (
-                            <Badge key={product.id} variant="secondary" className="font-normal">
-                              {product.name}
-                            </Badge>
-                          ))}
-                          {customer.products.length > 2 && (
-                            <Badge variant="outline">+{customer.products.length - 2} nữa</Badge>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {customer.stage && (
-                          <Badge variant="outline">{customer.stage.name}</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {customer.temperature && (
-                          <Badge variant={getTemperatureBadgeColor(customer.temperature.name)}>
-                            {customer.temperature.name}
-                          </Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {customer.assignedSalesperson?.name}
-                      </TableCell>
-                      <TableCell>
-                        {customer.latestContact ? (
+                    </TableRow>
+                  ) : (
+                    customersData?.customers.map((customer: Customer) => (
+                      <TableRow key={customer.id} className="hover:bg-muted/50">
+                        <TableCell>
+                          <Link 
+                            to={`/customers/${customer.id}`}
+                            className="font-medium text-primary hover:underline"
+                          >
+                            {customer.name}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
                           <div className="text-sm">
-                            <div className="font-medium">{customer.latestContact.type}</div>
-                            <div className="text-muted-foreground">
-                              {new Date(customer.latestContact.createdAt).toLocaleDateString()}
-                            </div>
-                            {customer.latestContact.snippet && (
-                              <div className="text-xs text-muted-foreground truncate max-w-32">
-                                {customer.latestContact.snippet}
+                            {customer.phone && <div>{customer.phone}</div>}
+                            {customer.email && <div>{customer.email}</div>}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            <div className="font-medium">{customer.companyName}</div>
+                            {customer.province && (
+                              <div className="text-muted-foreground">
+                                {customer.city}, {customer.province.name}
                               </div>
                             )}
                           </div>
-                        ) : (
-                          <span className="text-muted-foreground">Không có liên hệ</span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          {new Date(customer.createdAt).toLocaleDateString()}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-1">
-                          <Link to={`/customers/${customer.id}`}>
-                            <Button variant="outline" size="sm" className="h-8 px-2">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                          {canEditCustomer(customer) && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setEditingCustomer(customer)}
-                              className="h-8 px-2"
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-wrap gap-1 max-w-xs">
+                            {customer.products.slice(0, 2).map(product => (
+                              <Badge key={product.id} variant="secondary" className="font-normal">
+                                {product.name}
+                              </Badge>
+                            ))}
+                            {customer.products.length > 2 && (
+                              <Badge variant="outline">+{customer.products.length - 2} nữa</Badge>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {customer.stage && (
+                            <Badge variant="outline">{customer.stage.name}</Badge>
                           )}
-                          {canDeleteCustomer() && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleDeleteCustomer(customer)}
-                              disabled={deleteMutation.isPending}
-                              className="h-8 px-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                        </TableCell>
+                        <TableCell>
+                          {customer.temperature && (
+                            <Badge variant={getTemperatureBadgeColor(customer.temperature.name)}>
+                              {customer.temperature.name}
+                            </Badge>
                           )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+                        </TableCell>
+                        <TableCell>
+                          {customer.assignedSalesperson?.name}
+                        </TableCell>
+                        <TableCell>
+                          {customer.latestContact ? (
+                            <div className="text-sm">
+                              <div className="font-medium">{customer.latestContact.type}</div>
+                              <div className="text-muted-foreground">
+                                {new Date(customer.latestContact.createdAt).toLocaleDateString()}
+                              </div>
+                              {customer.latestContact.snippet && (
+                                <div className="text-xs text-muted-foreground truncate max-w-32">
+                                  {customer.latestContact.snippet}
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground">Không có liên hệ</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            {new Date(customer.createdAt).toLocaleDateString()}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-1">
+                            <Link to={`/customers/${customer.id}`}>
+                              <Button variant="outline" size="sm" className="h-8 px-2">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                            {canEditCustomer(customer) && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setEditingCustomer(customer)}
+                                className="h-8 px-2"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                            )}
+                            {canDeleteCustomer() && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleDeleteCustomer(customer)}
+                                disabled={deleteMutation.isPending}
+                                className="h-8 px-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="lg:hidden space-y-3">
+        {isLoading ? (
+          <div className="space-y-3">
+            {[...Array(3)].map((_, i) => (
+              <Card key={i} className="animate-pulse">
+                <CardContent className="p-4">
+                  <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-slate-200 rounded w-1/2"></div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        </CardContent>
-      </Card>
+        ) : customersData?.customers.length === 0 ? (
+          <Card>
+            <CardContent className="p-6 text-center">
+              <p className="text-muted-foreground">Không có khách hàng nào...</p>
+            </CardContent>
+          </Card>
+        ) : (
+          customersData?.customers.map((customer: Customer) => (
+            <Card key={customer.id} className="card-modern shadow-sm hover:shadow-md transition-shadow">
+              <CardContent className="p-4">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex-1 min-w-0">
+                    <Link 
+                      to={`/customers/${customer.id}`}
+                      className="font-semibold text-primary hover:underline block truncate"
+                    >
+                      {customer.name}
+                    </Link>
+                    <p className="text-sm text-muted-foreground truncate">{customer.companyName}</p>
+                  </div>
+                  <div className="flex gap-1 ml-2 flex-shrink-0">
+                    <Link to={`/customers/${customer.id}`}>
+                      <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                    {canEditCustomer(customer) && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditingCustomer(customer)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {canDeleteCustomer() && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDeleteCustomer(customer)}
+                        disabled={deleteMutation.isPending}
+                        className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="space-y-2 text-sm">
+                  {(customer.phone || customer.email) && (
+                    <div>
+                      {customer.phone && <p className="text-muted-foreground">{customer.phone}</p>}
+                      {customer.email && <p className="text-muted-foreground truncate">{customer.email}</p>}
+                    </div>
+                  )}
+                  
+                  {customer.province && (
+                    <p className="text-muted-foreground">
+                      {customer.city}, {customer.province.name}
+                    </p>
+                  )}
+                  
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {customer.stage && (
+                      <Badge variant="outline" className="text-xs">{customer.stage.name}</Badge>
+                    )}
+                    {customer.temperature && (
+                      <Badge variant={getTemperatureBadgeColor(customer.temperature.name)} className="text-xs">
+                        {customer.temperature.name}
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  {customer.products.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {customer.products.slice(0, 2).map(product => (
+                        <Badge key={product.id} variant="secondary" className="text-xs font-normal">
+                          {product.name}
+                        </Badge>
+                      ))}
+                      {customer.products.length > 2 && (
+                        <Badge variant="outline" className="text-xs">+{customer.products.length - 2} nữa</Badge>
+                      )}
+                    </div>
+                  )}
+                  
+                  {customer.assignedSalesperson && (
+                    <p className="text-muted-foreground">
+                      Nhân viên: {customer.assignedSalesperson.name}
+                    </p>
+                  )}
+                  
+                  <div className="flex justify-between items-center text-xs text-muted-foreground mt-3 pt-2 border-t border-slate-100">
+                    <span>Tạo: {new Date(customer.createdAt).toLocaleDateString()}</span>
+                    {customer.latestContact && (
+                      <span>Liên hệ cuối: {new Date(customer.latestContact.createdAt).toLocaleDateString()}</span>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
 
       {/* Pagination */}
       {customersData && customersData.totalPages > 1 && (
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-4 lg:mt-6">
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setPage(page - 1)}
               disabled={page <= 1}
+              className="text-xs lg:text-sm"
             >
               Trước
             </Button>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-xs lg:text-sm text-muted-foreground px-2">
               Trang {page} của {customersData.totalPages}
             </span>
             <Button
@@ -409,6 +541,7 @@ export function CustomerList() {
               size="sm"
               onClick={() => setPage(page + 1)}
               disabled={page >= customersData.totalPages}
+              className="text-xs lg:text-sm"
             >
               Tiếp
             </Button>

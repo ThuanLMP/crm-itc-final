@@ -65,15 +65,15 @@ export function Dashboard() {
   }
 
   return (
-    <div className="p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <div className="p-4 lg:p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-800">Bảng điều khiển</h1>
-          <p className="text-slate-600">Chào mừng trở lại, {user?.name}</p>
+        <div className="mb-6 lg:mb-8">
+          <h1 className="text-2xl lg:text-3xl font-bold text-slate-800">Bảng điều khiển</h1>
+          <p className="text-sm lg:text-base text-slate-600">Chào mừng trở lại, {user?.name}</p>
         </div>
 
         {/* Top Stats */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 lg:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Tổng khách hàng</CardTitle>
@@ -106,18 +106,18 @@ export function Dashboard() {
           </Card>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2 mt-6">
+        <div className="grid gap-4 lg:gap-6 grid-cols-1 lg:grid-cols-2 mt-4 lg:mt-6">
           {/* Customers by Salesperson */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center"><UserCheck className="mr-2 h-5 w-5" />Khách hàng theo nhân viên bán hàng</CardTitle>
+            <CardHeader className="pb-2 lg:pb-3">
+              <CardTitle className="flex items-center text-sm lg:text-base"><UserCheck className="mr-2 h-4 w-4 lg:h-5 lg:w-5" />Khách hàng theo nhân viên bán hàng</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={dashboardData?.customersBySalesperson}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
+                  <XAxis dataKey="name" fontSize={12} />
+                  <YAxis fontSize={12} />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
                   <Bar dataKey="count" name="Khách hàng" fill="#8884d8" />
@@ -128,18 +128,18 @@ export function Dashboard() {
 
           {/* Customers by Type */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center"><Briefcase className="mr-2 h-5 w-5" />Khách hàng theo loại</CardTitle>
+            <CardHeader className="pb-2 lg:pb-3">
+              <CardTitle className="flex items-center text-sm lg:text-base"><Briefcase className="mr-2 h-4 w-4 lg:h-5 lg:w-5" />Khách hàng theo loại</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
                     data={dashboardData?.customersByType}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    outerRadius={100}
+                    outerRadius={80}
                     fill="#8884d8"
                     dataKey="count"
                     nameKey="name"
@@ -157,18 +157,18 @@ export function Dashboard() {
           </Card>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2 mt-6">
+        <div className="grid gap-4 lg:gap-6 grid-cols-1 lg:grid-cols-2 mt-4 lg:mt-6">
           {/* Customers by Stage */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center"><TrendingUp className="mr-2 h-5 w-5" />Khách hàng theo giai đoạn</CardTitle>
+            <CardHeader className="pb-2 lg:pb-3">
+              <CardTitle className="flex items-center text-sm lg:text-base"><TrendingUp className="mr-2 h-4 w-4 lg:h-5 lg:w-5" />Khách hàng theo giai đoạn</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={dashboardData?.customersByStage}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
+                  <XAxis dataKey="name" fontSize={12} />
+                  <YAxis fontSize={12} />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
                   <Bar dataKey="count" name="Khách hàng" fill="#82ca9d" />
@@ -179,15 +179,15 @@ export function Dashboard() {
 
           {/* Customers by Product */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center"><ShoppingBag className="mr-2 h-5 w-5" />Khách hàng theo sản phẩm</CardTitle>
+            <CardHeader className="pb-2 lg:pb-3">
+              <CardTitle className="flex items-center text-sm lg:text-base"><ShoppingBag className="mr-2 h-4 w-4 lg:h-5 lg:w-5" />Khách hàng theo sản phẩm</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={dashboardData?.customersByProduct}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
+                  <XAxis dataKey="name" fontSize={12} />
+                  <YAxis fontSize={12} />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
                   <Bar dataKey="count" name="Khách hàng" fill="#ffc658" />
@@ -197,20 +197,20 @@ export function Dashboard() {
           </Card>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2 mt-6">
+        <div className="grid gap-4 lg:gap-6 grid-cols-1 lg:grid-cols-2 mt-4 lg:mt-6">
           {/* Recent Activities */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center"><Activity className="mr-2 h-5 w-5" />Hoạt động gần đây</CardTitle>
+            <CardHeader className="pb-2 lg:pb-3">
+              <CardTitle className="flex items-center text-sm lg:text-base"><Activity className="mr-2 h-4 w-4 lg:h-5 lg:w-5" />Hoạt động gần đây</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-3 lg:space-y-4 max-h-64 overflow-y-auto">
                 {dashboardData?.recentActivities.length ? dashboardData.recentActivities.map((activity, index) => (
                   <div key={index} className="flex items-start">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5"></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{activity.subject || `Contact (${activity.type})`}</p>
-                      <p className="text-sm text-muted-foreground">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-3 mt-1.5 flex-shrink-0"></div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{activity.subject || `Contact (${activity.type})`}</p>
+                      <p className="text-xs lg:text-sm text-muted-foreground">
                         With <span className="font-semibold text-primary">{activity.customerName}</span> by {activity.createdBy}
                       </p>
                       <p className="text-xs text-muted-foreground">{new Date(activity.createdAt).toLocaleString()}</p>
@@ -223,17 +223,17 @@ export function Dashboard() {
 
           {/* Upcoming Appointments */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center"><Clock className="mr-2 h-5 w-5" />Lịch hẹn sắp tới</CardTitle>
+            <CardHeader className="pb-2 lg:pb-3">
+              <CardTitle className="flex items-center text-sm lg:text-base"><Clock className="mr-2 h-4 w-4 lg:h-5 lg:w-5" />Lịch hẹn sắp tới</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-3 lg:space-y-4 max-h-64 overflow-y-auto">
                 {dashboardData?.upcomingAppointments.length ? dashboardData.upcomingAppointments.map((apt) => (
                   <div key={apt.id} className="flex items-start">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mr-3 mt-1.5"></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{apt.title}</p>
-                      <p className="text-sm text-muted-foreground">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-3 mt-1.5 flex-shrink-0"></div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{apt.title}</p>
+                      <p className="text-xs lg:text-sm text-muted-foreground">
                         With <span className="font-semibold text-primary">{apt.customerName}</span>
                       </p>
                       <p className="text-xs text-muted-foreground">{new Date(apt.scheduledAt).toLocaleString()}</p>
