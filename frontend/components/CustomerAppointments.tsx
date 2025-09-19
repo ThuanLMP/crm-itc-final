@@ -175,7 +175,6 @@ export function CustomerAppointments({ customerId, customerName }: CustomerAppoi
                 <SelectValue placeholder="Trạng thái" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tất cả trạng thái</SelectItem>
                 <SelectItem value="scheduled">Đã lên lịch</SelectItem>
                 <SelectItem value="completed">Hoàn thành</SelectItem>
                 <SelectItem value="cancelled">Đã hủy</SelectItem>
