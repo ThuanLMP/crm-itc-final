@@ -1,19 +1,24 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, User, MapPin, Plus } from "lucide-react";
+import { Calendar, Clock, User, MapPin, Plus, Edit, CheckCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useBackend, useAuth } from "../contexts/AuthContext";
 import { CreateAppointmentDialog } from "../components/CreateAppointmentDialog";
+import { EditAppointmentDialog } from "../components/EditAppointmentDialog";
+import type { Appointment } from "~backend/appointments/types";
 
 export function AppointmentsList() {
   const [view, setView] = useState<"upcoming" | "all">("upcoming");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null);
 
   const backend = useBackend();
+  const { user } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: appointmentsData, isLoading, error, refetch } = useQuery({
     queryKey: ["appointments", view],
@@ -36,6 +41,46 @@ export function AppointmentsList() {
       }
     },
   });
+
+  const completeAppointmentMutation = useMutation({
+    mutationFn: (appointment: Appointment) => {
+      return backend.appointments.update({
+        id: appointment.id,
+        title: appointment.title,
+        description: appointment.description,
+        scheduledAt: appointment.scheduledAt,
+        duration: appointment.duration,
+        status: "completed",
+        reminderMinutes: appointment.reminderMinutes || []
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Thành công",
+        description: "Lịch hẹn đã được đánh dấu hoàn thành",
+      });
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      refetch();
+    },
+    onError: (error: any) => {
+      console.error("Lỗi khi hoàn thành lịch hẹn:", error);
+      toast({
+        title: "Lỗi",
+        description: error.message || "Không thể hoàn thành lịch hẹn",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleCompleteAppointment = (appointment: Appointment) => {
+    if (window.confirm(`Bạn có chắc chắn muốn đánh dấu lịch hẹn "${appointment.title}" là hoàn thành?`)) {
+      completeAppointmentMutation.mutate(appointment);
+    }
+  };
+
+  const canEditAppointment = (appointment: Appointment) => {
+    return user?.role === "admin" || appointment.assignedTo.id === user?.id;
+  };
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
@@ -154,12 +199,27 @@ export function AppointmentsList() {
                     </div>
                     
                     <div className="flex gap-2 ml-4">
-                      <Button variant="outline" size="sm">
-                        Chỉnh sửa
-                      </Button>
-                      {appointment.status === "scheduled" && (
-                        <Button variant="outline" size="sm" className="text-green-600 hover:text-green-700">
-Hoàn thành
+                      {canEditAppointment(appointment) && (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setEditingAppointment(appointment)}
+                          className="text-sm"
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          <span className="hidden sm:inline">Chỉnh sửa</span>
+                        </Button>
+                      )}
+                      {appointment.status === "scheduled" && canEditAppointment(appointment) && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="text-green-600 hover:text-green-700 hover:bg-green-50 text-sm"
+                          onClick={() => handleCompleteAppointment(appointment)}
+                          disabled={completeAppointmentMutation.isPending}
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          <span className="hidden sm:inline">Hoàn thành</span>
                         </Button>
                       )}
                     </div>
@@ -179,6 +239,18 @@ Hoàn thành
           setShowCreateDialog(false);
         }}
       />
+
+      {editingAppointment && (
+        <EditAppointmentDialog
+          appointment={editingAppointment}
+          open={!!editingAppointment}
+          onOpenChange={(open) => !open && setEditingAppointment(null)}
+          onSuccess={() => {
+            refetch();
+            setEditingAppointment(null);
+          }}
+        />
+      )}
     </div>
   );
 }
