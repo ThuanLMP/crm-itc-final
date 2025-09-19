@@ -89,7 +89,7 @@ export function PasswordManagementDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Manage Password - {userName}</DialogTitle>
+          <DialogTitle>Quản lý mật khẩu - {userName}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -100,7 +100,7 @@ export function PasswordManagementDialog({
               size="sm"
               onClick={() => setAction("change")}
             >
-              Change Password
+              Đổi mật khẩu
             </Button>
             <Button
               type="button"
@@ -108,19 +108,19 @@ export function PasswordManagementDialog({
               size="sm"
               onClick={() => setAction("reset")}
             >
-              Reset to Default
+             Đặt lại mật khẩu
             </Button>
           </div>
 
           {action === "change" && (
             <div>
-              <Label htmlFor="newPassword">New Password *</Label>
+              <Label htmlFor="newPassword">Đổi mật khẩu *</Label>
               <Input
                 id="newPassword"
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Enter new password (min 6 chars)"
+                placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)"
                 required
                 className="mt-1"
               />
@@ -130,14 +130,14 @@ export function PasswordManagementDialog({
           {action === "reset" && (
             <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
               <p className="text-sm text-amber-800">
-                This will reset the password to a randomly generated secure password. The new password will be displayed once.
+								Điều này sẽ đặt lại thành mật khẩu an toàn ngẫu nhiên. Mật khẩu mới sẽ chỉ xuất hiện 1 lần.
               </p>
             </div>
           )}
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              Hủy
             </Button>
             <Button 
               type="submit" 
