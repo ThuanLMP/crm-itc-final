@@ -128,7 +128,7 @@ export function MasterDataManagement() {
 
   return (
     <div className="p-4 lg:p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
+      <div className="mx-auto">
         <div className="mb-6 lg:mb-8">
           <div className="flex items-center gap-2 lg:gap-3 mb-2">
             <div className="p-1.5 lg:p-2 bg-blue-100 rounded-lg">
