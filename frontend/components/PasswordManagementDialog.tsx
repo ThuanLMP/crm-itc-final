@@ -32,8 +32,8 @@ export function PasswordManagementDialog({
     mutationFn: (password: string) => backend.auth.changePassword({ userId, newPassword: password }),
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Password changed successfully",
+        title: "Thành công",
+        description: "Đổi mật khẩu thành công",
       });
       onSuccess();
       setNewPassword("");
@@ -41,8 +41,8 @@ export function PasswordManagementDialog({
     onError: (error: any) => {
       console.error("Failed to change password:", error);
       toast({
-        title: "Error",
-        description: error.message || "Failed to change password",
+        title: "Lỗi",
+        description: error.message || "Lỗi khi đổi mật khẩu",
         variant: "destructive",
       });
     },
