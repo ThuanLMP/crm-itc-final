@@ -319,7 +319,7 @@ export function CustomerList() {
                 <SelectValue placeholder="Chọn loại lọc" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Không lọc</SelectItem>
+                <SelectItem value="all">Không lọc</SelectItem>
                 {filterTypes.map((type) => (
                   <SelectItem key={type.value} value={type.value}>
                     {type.label}
