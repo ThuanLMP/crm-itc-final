@@ -181,7 +181,7 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
               Hủy
             </Button>
             <Button type="submit" disabled={createMutation.isPending}>
-              {createMutation.isPending ? "Creating..." : "Create Appointment"}
+              {createMutation.isPending ? "Đang tạo..." : "Tạo lịch hẹn"}
             </Button>
           </div>
         </form>
