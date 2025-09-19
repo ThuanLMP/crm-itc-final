@@ -64,7 +64,7 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
       console.error("Lỗi khi tạo lịch hẹn:", error);
       toast({
         title: "Lỗi",
-        description: error.message || "Failed to create appointment",
+        description: error.message || "Lỗi khi tạo lịch hẹn",
         variant: "destructive",
       });
     },
@@ -74,8 +74,8 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
     e.preventDefault();
     if (!formData.title?.trim() || !formData.customerId || !formData.scheduledAt || !formData.duration) {
       toast({
-        title: "Error",
-        description: "Please fill all required fields",
+        title: "Lỗi",
+        description: "Hãy hoàn thành tất cả các trường",
         variant: "destructive",
       });
       return;
