@@ -113,7 +113,7 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
             <Label>Khách hàng *</Label>
             <Select value={formData.customerId} onValueChange={(value) => handleSelectChange("customerId", value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Select a customer" />
+                <SelectValue placeholder="Chọn khách hàng" />
               </SelectTrigger>
               <SelectContent>
                 {customersData?.customers?.map((customer) => (
