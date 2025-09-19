@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { useBackend, useAuth } from "../contexts/AuthContext";
@@ -213,18 +214,18 @@ export function CreateCustomerDialog({ open, onOpenChange, onSuccess }: CreateCu
 
           <div>
             <Label className="text-sm lg:text-base">Tỉnh/Thành phố</Label>
-            <Select value={formData.provinceId} onValueChange={(value) => handleSelectChange("provinceId", value)}>
-              <SelectTrigger className="w-full text-sm lg:text-base">
-                <SelectValue placeholder="Chọn tỉnh/thành phố" />
-              </SelectTrigger>
-              <SelectContent>
-                {masterData?.provinces?.map((province: any) => (
-                  <SelectItem key={province.id} value={province.id}>
-                    {province.name}
-                  </SelectItem>
-                )) || []}
-              </SelectContent>
-            </Select>
+            <Combobox
+              value={formData.provinceId}
+              onValueChange={(value) => handleSelectChange("provinceId", value)}
+              options={masterData?.provinces?.map((province: any) => ({
+                value: province.id,
+                label: province.name,
+              })) || []}
+              placeholder="Tìm và chọn tỉnh/thành phố..."
+              searchPlaceholder="Nhập tên tỉnh/thành phố..."
+              emptyMessage="Không tìm thấy tỉnh/thành phố"
+              className="w-full"
+            />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">

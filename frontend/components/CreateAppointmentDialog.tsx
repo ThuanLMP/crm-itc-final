@@ -80,10 +80,10 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess, custome
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title?.trim() || !formData.customerId || !formData.scheduledAt || !formData.duration) {
+    if (!formData.customerId || !formData.scheduledAt || !formData.duration) {
       toast({
         title: "Lỗi",
-        description: "Hãy hoàn thành tất cả các trường",
+        description: "Vui lòng chọn khách hàng, thời gian và thời lượng",
         variant: "destructive",
       });
       return;
@@ -108,12 +108,11 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess, custome
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="title">Tiêu đề *</Label>
+            <Label htmlFor="title">Tiêu đề</Label>
             <Input
               id="title"
               value={formData.title}
               onChange={(e) => handleInputChange("title", e.target.value)}
-              required
             />
           </div>
 

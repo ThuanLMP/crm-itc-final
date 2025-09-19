@@ -7,11 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Filter, ArrowUpDown, Eye, Pencil, Trash2, Calendar, Clock, CheckCircle, Upload } from "lucide-react";
+import { Plus, Search, Filter, ArrowUpDown, Eye, Pencil, Trash2, Calendar, Clock, CheckCircle, Upload, UserPlus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useBackend, useAuth } from "../contexts/AuthContext";
 import { CreateCustomerDialog } from "../components/CreateCustomerDialog";
 import { EditCustomerDialog } from "../components/EditCustomerDialog";
+import { CreateContactDialog } from "../components/CreateContactDialog";
 import { ExportDropdown } from "../components/ExportDropdown";
 import ImportCustomersDialog from "../components/ImportCustomersDialog";
 import type { Customer } from "~backend/customers/types";
@@ -35,6 +36,8 @@ export function CustomerList() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+  const [showCreateContactDialog, setShowCreateContactDialog] = useState(false);
+  const [selectedCustomerForContact, setSelectedCustomerForContact] = useState<string | null>(null);
 
   const backend = useBackend();
   const { user } = useAuth();
@@ -243,6 +246,11 @@ export function CustomerList() {
     if (window.confirm(`Bạn có chắc chắn muốn xóa khách hàng "${customer.name}"? Hành động này không thể hoàn tác.`)) {
       deleteMutation.mutate(customer.id);
     }
+  };
+
+  const handleCreateContact = (customerId: string) => {
+    setSelectedCustomerForContact(customerId);
+    setShowCreateContactDialog(true);
   };
 
   if (error) {
@@ -545,16 +553,26 @@ export function CustomerList() {
                         <TableCell className="text-right sticky right-0 bg-white z-10 border-l border-slate-200">
                           <div className="flex justify-end gap-1">
                             <Link to={`/customers/${customer.id}`}>
-                              <Button variant="outline" size="sm" className="h-8 px-2">
+                              <Button variant="outline" size="sm" className="h-8 px-2" title="Xem chi tiết">
                                 <Eye className="h-4 w-4" />
                               </Button>
                             </Link>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleCreateContact(customer.id)}
+                              className="h-8 px-2 hover:bg-green-50 hover:text-green-600 hover:border-green-200"
+                              title="Thêm liên hệ nhanh"
+                            >
+                              <UserPlus className="h-4 w-4" />
+                            </Button>
                             {canEditCustomer(customer) && (
                               <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setEditingCustomer(customer)}
                                 className="h-8 px-2"
+                                title="Chỉnh sửa"
                               >
                                 <Pencil className="h-4 w-4" />
                               </Button>
@@ -566,6 +584,7 @@ export function CustomerList() {
                                 onClick={() => handleDeleteCustomer(customer)}
                                 disabled={deleteMutation.isPending}
                                 className="h-8 px-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                                title="Xóa"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
@@ -617,16 +636,26 @@ export function CustomerList() {
                   </div>
                   <div className="flex gap-1 ml-2 flex-shrink-0">
                     <Link to={`/customers/${customer.id}`}>
-                      <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                      <Button variant="outline" size="sm" className="h-8 w-8 p-0" title="Xem chi tiết">
                         <Eye className="h-4 w-4" />
                       </Button>
                     </Link>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleCreateContact(customer.id)}
+                      className="h-8 w-8 p-0 hover:bg-green-50 hover:text-green-600 hover:border-green-200"
+                      title="Thêm liên hệ nhanh"
+                    >
+                      <UserPlus className="h-4 w-4" />
+                    </Button>
                     {canEditCustomer(customer) && (
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setEditingCustomer(customer)}
                         className="h-8 w-8 p-0"
+                        title="Chỉnh sửa"
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
@@ -638,6 +667,7 @@ export function CustomerList() {
                         onClick={() => handleDeleteCustomer(customer)}
                         disabled={deleteMutation.isPending}
                         className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                        title="Xóa"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -791,6 +821,19 @@ export function CustomerList() {
           refetch();
         }}
       />
+
+      {selectedCustomerForContact && (
+        <CreateContactDialog
+          customerId={selectedCustomerForContact}
+          open={showCreateContactDialog}
+          onOpenChange={(open) => {
+            setShowCreateContactDialog(open);
+            if (!open) {
+              setSelectedCustomerForContact(null);
+            }
+          }}
+        />
+      )}
       </div>
     </div>
   );
