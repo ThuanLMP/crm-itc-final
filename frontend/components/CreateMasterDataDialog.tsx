@@ -65,7 +65,7 @@ export function CreateMasterDataDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Tạo mới {tableLabel.slice(0, -1)}</DialogTitle>
+          <DialogTitle>Tạo mới {tableLabel}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
