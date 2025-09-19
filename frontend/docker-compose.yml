@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  crm_itc_frontend:
+    container_name: crm_itc_frontend
+    image: crm_itc_frontend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      cache_from:
+        - crm_itc_frontend:latest
+    ports:
+      - "4400:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:80/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    environment:
+      - NODE_ENV:production
