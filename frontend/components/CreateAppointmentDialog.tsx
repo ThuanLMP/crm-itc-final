@@ -137,7 +137,7 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
               />
             </div>
             <div>
-              <Label htmlFor="duration">Duration (minutes) *</Label>
+              <Label htmlFor="duration">Thời gian (phút) *</Label>
               <Input
                 id="duration"
                 type="number"
