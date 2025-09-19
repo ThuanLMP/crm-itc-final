@@ -132,11 +132,11 @@ export function CustomerDetail() {
         </div>
 
         <Tabs defaultValue="details" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="details">Thông tin khách hàng</TabsTrigger>
-            <TabsTrigger value="contacts">Lịch sử liên hệ</TabsTrigger>
-            <TabsTrigger value="orders">Lịch sử đơn hàng</TabsTrigger>
-            <TabsTrigger value="payments">Lịch sử thanh toán</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 mb-4 lg:mb-6">
+            <TabsTrigger value="details" className="text-xs lg:text-sm">Chi tiết</TabsTrigger>
+            <TabsTrigger value="contacts" className="text-xs lg:text-sm">Liên hệ</TabsTrigger>
+            <TabsTrigger value="orders" className="text-xs lg:text-sm">Đơn hàng</TabsTrigger>
+            <TabsTrigger value="payments" className="text-xs lg:text-sm">Thanh toán</TabsTrigger>
           </TabsList>
 
           <TabsContent value="details" className="space-y-6">

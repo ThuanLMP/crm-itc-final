@@ -157,68 +157,73 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl min-w-3xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl w-[95vw] lg:min-w-3xl max-h-[85vh] lg:max-h-[80vh] overflow-y-auto p-4 lg:p-6">
         <DialogHeader>
-          <DialogTitle>Sửa khách hàng</DialogTitle>
+          <DialogTitle className="text-lg lg:text-xl">Sửa khách hàng</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-3 lg:space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
             <div>
-              <Label htmlFor="name">Tên *</Label>
+              <Label htmlFor="name" className="text-sm lg:text-base">Tên *</Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 required
+                className="text-sm lg:text-base"
               />
             </div>
             <div>
-              <Label htmlFor="companyName">Công ty</Label>
+              <Label htmlFor="companyName" className="text-sm lg:text-base">Công ty</Label>
               <Input
                 id="companyName"
                 value={formData.companyName}
                 onChange={(e) => handleInputChange("companyName", e.target.value)}
+                className="text-sm lg:text-base"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
             <div>
-              <Label htmlFor="phone">SĐT</Label>
+              <Label htmlFor="phone" className="text-sm lg:text-base">SĐT</Label>
               <Input
                 id="phone"
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => handleInputChange("phone", e.target.value)}
+                className="text-sm lg:text-base"
               />
             </div>
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-sm lg:text-base">Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
+                className="text-sm lg:text-base"
               />
             </div>
           </div>
 
           <div>
-            <Label htmlFor="address">Địa chỉ</Label>
+            <Label htmlFor="address" className="text-sm lg:text-base">Địa chỉ</Label>
             <Input
               id="address"
               value={formData.address}
               onChange={(e) => handleInputChange("address", e.target.value)}
+              className="text-sm lg:text-base"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
             <div>
-              <Label>Tỉnh</Label>
+              <Label className="text-sm lg:text-base">Tỉnh</Label>
               <Select value={formData.provinceId} onValueChange={(value) => handleSelectChange("provinceId", value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Province" />
+                <SelectTrigger className="w-full text-sm lg:text-base">
+                  <SelectValue placeholder="Chọn tỉnh" />
                 </SelectTrigger>
                 <SelectContent>
                   {masterData?.provinces?.map((province: any) => (
@@ -229,14 +234,23 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
                 </SelectContent>
               </Select>
             </div>
+            <div>
+              <Label htmlFor="city" className="text-sm lg:text-base">Thành phố</Label>
+              <Input
+                id="city"
+                value={formData.city}
+                onChange={(e) => handleInputChange("city", e.target.value)}
+                className="text-sm lg:text-base"
+              />
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
             <div>
-              <Label>Loại khách hàng</Label>
+              <Label className="text-sm lg:text-base">Loại khách hàng</Label>
               <Select value={formData.customerTypeId} onValueChange={(value) => handleSelectChange("customerTypeId", value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Customer Type" />
+                <SelectTrigger className="w-full text-sm lg:text-base">
+                  <SelectValue placeholder="Chọn loại khách hàng" />
                 </SelectTrigger>
                 <SelectContent>
                   {masterData?.customerTypes?.filter((ct: any) => ct.active).map((type: any) => (
@@ -248,10 +262,10 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
               </Select>
             </div>
             <div>
-              <Label>Loại hình kinh doanh</Label>
+              <Label className="text-sm lg:text-base">Loại hình kinh doanh</Label>
               <Select value={formData.businessTypeId} onValueChange={(value) => handleSelectChange("businessTypeId", value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Business Type" />
+                <SelectTrigger className="w-full text-sm lg:text-base">
+                  <SelectValue placeholder="Chọn loại hình" />
                 </SelectTrigger>
                 <SelectContent>
                   {masterData?.businessTypes?.filter((bt: any) => bt.active).map((type: any) => (
@@ -264,12 +278,12 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
             <div>
-              <Label>Giai đoạn</Label>
+              <Label className="text-sm lg:text-base">Giai đoạn</Label>
               <Select value={formData.stageId} onValueChange={(value) => handleSelectChange("stageId", value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Stage" />
+                <SelectTrigger className="w-full text-sm lg:text-base">
+                  <SelectValue placeholder="Chọn giai đoạn" />
                 </SelectTrigger>
                 <SelectContent>
                   {masterData?.stages?.filter((s: any) => s.active).map((stage: any) => (
@@ -281,10 +295,10 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
               </Select>
             </div>
             <div>
-              <Label>Mức độ</Label>
+              <Label className="text-sm lg:text-base">Mức độ</Label>
               <Select value={formData.temperatureId} onValueChange={(value) => handleSelectChange("temperatureId", value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Temperature" />
+                <SelectTrigger className="w-full text-sm lg:text-base">
+                  <SelectValue placeholder="Chọn mức độ" />
                 </SelectTrigger>
                 <SelectContent>
                   {masterData?.temperatures?.filter((t: any) => t.active).map((temp: any) => (
@@ -300,10 +314,10 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
           {/* Assign Employee - Only visible to admins */}
           {user?.role === "admin" && (
             <div>
-              <Label>Gán cho NV</Label>
+              <Label className="text-sm lg:text-base">Gán cho NV</Label>
               <Select value={formData.assignedSalespersonId} onValueChange={(value) => handleSelectChange("assignedSalespersonId", value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Employee" />
+                <SelectTrigger className="w-full text-sm lg:text-base">
+                  <SelectValue placeholder="Chọn nhân viên" />
                 </SelectTrigger>
                 <SelectContent>
                   {employeesData?.employees?.filter((emp: any) => emp.active).map((employee: any) => (
@@ -319,18 +333,18 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
           {/* Show read-only assignment for employees */}
           {user?.role === "employee" && customer.assignedSalesperson && (
             <div>
-              <Label>Gán cho NV</Label>
+              <Label className="text-sm lg:text-base">Gán cho NV</Label>
               <Input
                 value={`${customer.assignedSalesperson.name}`}
                 disabled
-                className="bg-muted"
+                className="bg-muted text-sm lg:text-base"
               />
             </div>
           )}
 
           <div>
-            <Label>Sản phẩm</Label>
-            <div className="mt-2 grid grid-cols-2 gap-2 rounded-lg border p-4">
+            <Label className="text-sm lg:text-base">Sản phẩm</Label>
+            <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2 rounded-lg border p-3 lg:p-4 max-h-32 lg:max-h-40 overflow-y-auto">
               {masterData?.products?.filter((p: any) => p.active).map((product: any) => (
                 <div key={product.id} className="flex items-center space-x-2">
                   <Checkbox
@@ -340,7 +354,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
                   />
                   <label
                     htmlFor={`edit-product-${product.id}`}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    className="text-xs lg:text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
                     {product.name}
                   </label>
@@ -350,20 +364,21 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
           </div>
 
           <div>
-            <Label htmlFor="notes">Ghi chú</Label>
+            <Label htmlFor="notes" className="text-sm lg:text-base">Ghi chú</Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => handleInputChange("notes", e.target.value)}
               rows={3}
+              className="text-sm lg:text-base"
             />
           </div>
 
-          <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+          <div className="flex flex-col sm:flex-row justify-end gap-2 lg:gap-3 pt-2">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="text-sm lg:text-base">
               Hủy
             </Button>
-            <Button type="submit" disabled={updateMutation.isPending}>
+            <Button type="submit" disabled={updateMutation.isPending} className="text-sm lg:text-base">
               {updateMutation.isPending ? "Đang sửa..." : "Sửa khách hàng"}
             </Button>
           </div>
