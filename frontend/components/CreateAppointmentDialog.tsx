@@ -150,7 +150,7 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
 
           {user?.role === "admin" && (
             <div>
-              <Label>Assign To</Label>
+              <Label>Người phụ trách</Label>
               <Select value={formData.assignedToId} onValueChange={(value) => handleSelectChange("assignedToId", value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select employee (defaults to you)" />
@@ -167,7 +167,7 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
           )}
 
           <div>
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Mô tả</Label>
             <Textarea
               id="description"
               value={formData.description}
@@ -178,7 +178,7 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
 
           <div className="flex justify-end space-x-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              Hủy
             </Button>
             <Button type="submit" disabled={createMutation.isPending}>
               {createMutation.isPending ? "Creating..." : "Create Appointment"}
