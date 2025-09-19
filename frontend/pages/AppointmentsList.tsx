@@ -61,35 +61,38 @@ export function AppointmentsList() {
   }
 
   return (
-    <div className="p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <div className="p-4 lg:p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-800">Lịch hẹn</h1>
-            <p className="text-slate-600 mt-1">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 lg:mb-8 gap-4">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl lg:text-3xl font-bold text-slate-800">Lịch hẹn</h1>
+            <p className="text-sm lg:text-base text-slate-600 mt-1">
               Tổng cộng {appointmentsData?.total || 0} lịch hẹn
             </p>
           </div>
-          <div className="flex gap-3">
-            <div className="flex gap-2 p-1 bg-white rounded-lg shadow-sm">
+          <div className="flex flex-col sm:flex-row gap-2 lg:gap-3 w-full sm:w-auto">
+            <div className="flex gap-1 p-1 bg-white rounded-lg shadow-sm">
               <Button
                 variant={view === "upcoming" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setView("upcoming")}
+                className="text-xs lg:text-sm"
               >
-Sắp tới
+                Sắp tới
               </Button>
               <Button
                 variant={view === "all" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setView("all")}
+                className="text-xs lg:text-sm"
               >
-Tất cả
+                Tất cả
               </Button>
             </div>
-            <Button onClick={() => setShowCreateDialog(true)} className="btn-gradient">
+            <Button onClick={() => setShowCreateDialog(true)} className="btn-gradient text-sm">
               <Plus className="h-4 w-4 mr-2" />
-              Lịch hẹn mới
+              <span className="sm:hidden">Mới</span>
+              <span className="hidden sm:inline">Lịch hẹn mới</span>
             </Button>
           </div>
         </div>

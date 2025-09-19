@@ -322,27 +322,28 @@ export function CustomerDetail() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="contacts" className="space-y-6">
+          <TabsContent value="contacts" className="space-y-4 lg:space-y-6">
             <Card className="card-modern">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center text-slate-800">
-                    <MessageCircle className="h-5 w-5 mr-2" />
+              <CardHeader className="pb-3 lg:pb-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <CardTitle className="flex items-center text-base lg:text-lg text-slate-800">
+                    <MessageCircle className="h-4 w-4 lg:h-5 lg:w-5 mr-2" />
                     Lịch sử liên hệ
                   </CardTitle>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
                     <div className="relative">
                       <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-400" />
                       <Input
                         placeholder="Tìm kiếm liên hệ..."
                         value={contactSearch}
                         onChange={(e) => setContactSearch(e.target.value)}
-                        className="pl-8 w-64"
+                        className="pl-8 w-full sm:w-64 text-sm lg:text-base"
                       />
                     </div>
-                    <Button onClick={() => setShowCreateContactDialog(true)} size="sm">
+                    <Button onClick={() => setShowCreateContactDialog(true)} size="sm" className="text-sm">
                       <Plus className="h-4 w-4 mr-1" />
-                      Thêm liên hệ
+                      <span className="sm:hidden">Thêm</span>
+                      <span className="hidden sm:inline">Thêm liên hệ</span>
                     </Button>
                   </div>
                 </div>
@@ -431,27 +432,28 @@ export function CustomerDetail() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="orders" className="space-y-6">
+          <TabsContent value="orders" className="space-y-4 lg:space-y-6">
             <Card className="card-modern">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center text-slate-800">
-                    <Receipt className="h-5 w-5 mr-2" />
+              <CardHeader className="pb-3 lg:pb-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <CardTitle className="flex items-center text-base lg:text-lg text-slate-800">
+                    <Receipt className="h-4 w-4 lg:h-5 lg:w-5 mr-2" />
                     Lịch sử đơn hàng
                   </CardTitle>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
                     <div className="relative">
                       <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-400" />
                       <Input
                         placeholder="Tìm kiếm đơn hàng..."
                         value={orderSearch}
                         onChange={(e) => setOrderSearch(e.target.value)}
-                        className="pl-8 w-64"
+                        className="pl-8 w-full sm:w-64 text-sm lg:text-base"
                       />
                     </div>
-                    <Button onClick={() => setShowCreateOrderDialog(true)} size="sm">
+                    <Button onClick={() => setShowCreateOrderDialog(true)} size="sm" className="text-sm">
                       <Plus className="h-4 w-4 mr-1" />
-                      Thêm đơn hàng
+                      <span className="sm:hidden">Thêm</span>
+                      <span className="hidden sm:inline">Thêm đơn hàng</span>
                     </Button>
                   </div>
                 </div>
@@ -570,27 +572,28 @@ export function CustomerDetail() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="payments" className="space-y-6">
+          <TabsContent value="payments" className="space-y-4 lg:space-y-6">
             <Card className="card-modern">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center text-slate-800">
-                    <CreditCard className="h-5 w-5 mr-2" />
+              <CardHeader className="pb-3 lg:pb-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <CardTitle className="flex items-center text-base lg:text-lg text-slate-800">
+                    <CreditCard className="h-4 w-4 lg:h-5 lg:w-5 mr-2" />
                     Lịch sử thanh toán
                   </CardTitle>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
                     <div className="relative">
                       <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-400" />
                       <Input
                         placeholder="Tìm kiếm thanh toán..."
                         value={paymentSearch}
                         onChange={(e) => setPaymentSearch(e.target.value)}
-                        className="pl-8 w-64"
+                        className="pl-8 w-full sm:w-64 text-sm lg:text-base"
                       />
                     </div>
-                    <Button onClick={() => setShowCreatePaymentDialog(true)} size="sm">
+                    <Button onClick={() => setShowCreatePaymentDialog(true)} size="sm" className="text-sm">
                       <Plus className="h-4 w-4 mr-1" />
-                      Thêm thanh toán
+                      <span className="sm:hidden">Thêm</span>
+                      <span className="hidden sm:inline">Thêm thanh toán</span>
                     </Button>
                   </div>
                 </div>
