@@ -54,9 +54,18 @@ export default function ImportCustomersDialog({
 
     setImporting(true);
     try {
-      // Convert file to base64
-      const arrayBuffer = await file.arrayBuffer();
-      const base64 = Buffer.from(arrayBuffer).toString('base64');
+      // Convert file to base64 using FileReader (browser-compatible)
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = reader.result as string;
+          // Remove the data URL prefix to get just the base64 content
+          const base64Data = result.split(',')[1];
+          resolve(base64Data);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
 
       const result = await backend.customers.importCustomers({ fileContent: base64 });
       setImportResult(result);
