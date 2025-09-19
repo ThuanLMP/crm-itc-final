@@ -143,13 +143,14 @@ export namespace appointments {
         public async list(params: RequestType<typeof api_appointments_list_list>): Promise<ResponseType<typeof api_appointments_list_list>> {
             // Convert our params into the objects we need for the request
             const query = makeRecord<string, string | string[]>({
-                assignedToId: params.assignedToId,
-                customerId:   params.customerId,
-                fromDate:     params.fromDate === undefined ? undefined : params.fromDate.toISOString(),
-                limit:        params.limit === undefined ? undefined : String(params.limit),
-                page:         params.page === undefined ? undefined : String(params.page),
-                status:       params.status,
-                toDate:       params.toDate === undefined ? undefined : params.toDate.toISOString(),
+                assignedToId:   params.assignedToId,
+                customerId:     params.customerId,
+                customerSearch: params.customerSearch,
+                fromDate:       params.fromDate === undefined ? undefined : params.fromDate.toISOString(),
+                limit:          params.limit === undefined ? undefined : String(params.limit),
+                page:           params.page === undefined ? undefined : String(params.page),
+                status:         params.status,
+                toDate:         params.toDate === undefined ? undefined : params.toDate.toISOString(),
             })
 
             // Now make the actual call to the API

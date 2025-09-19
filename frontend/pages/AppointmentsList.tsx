@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, User, MapPin, Plus, Edit, CheckCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Calendar, Clock, User, MapPin, Plus, Edit, CheckCircle, Search } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useBackend, useAuth } from "../contexts/AuthContext";
 import { CreateAppointmentDialog } from "../components/CreateAppointmentDialog";
@@ -14,6 +15,7 @@ export function AppointmentsList() {
   const [view, setView] = useState<"upcoming" | "all">("upcoming");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null);
+  const [customerSearch, setCustomerSearch] = useState("");
 
   const backend = useBackend();
   const { user } = useAuth();
@@ -21,13 +23,16 @@ export function AppointmentsList() {
   const queryClient = useQueryClient();
 
   const { data: appointmentsData, isLoading, error, refetch } = useQuery({
-    queryKey: ["appointments", view],
+    queryKey: ["appointments", view, customerSearch],
     queryFn: async () => {
       try {
         const params: any = {};
         if (view === "upcoming") {
           params.fromDate = new Date();
           params.status = "scheduled";
+        }
+        if (customerSearch.trim()) {
+          params.customerSearch = customerSearch.trim();
         }
         return await backend.appointments.list(params);
       } catch (err) {
@@ -108,37 +113,50 @@ export function AppointmentsList() {
   return (
     <div className="p-4 lg:p-6 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
       <div className="mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 lg:mb-8 gap-4">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-2xl lg:text-3xl font-bold text-slate-800">Lịch hẹn</h1>
-            <p className="text-sm lg:text-base text-slate-600 mt-1">
-              Tổng cộng {appointmentsData?.total || 0} lịch hẹn
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-2 lg:gap-3 w-full sm:w-auto">
-            <div className="flex gap-1 p-1 bg-white rounded-lg shadow-sm">
-              <Button
-                variant={view === "upcoming" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setView("upcoming")}
-                className="text-xs lg:text-sm"
-              >
-                Sắp tới
-              </Button>
-              <Button
-                variant={view === "all" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setView("all")}
-                className="text-xs lg:text-sm"
-              >
-                Tất cả
+        <div className="flex flex-col gap-4 mb-6 lg:mb-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl lg:text-3xl font-bold text-slate-800">Lịch hẹn</h1>
+              <p className="text-sm lg:text-base text-slate-600 mt-1">
+                Tổng cộng {appointmentsData?.total || 0} lịch hẹn
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 lg:gap-3 w-full sm:w-auto">
+              <div className="flex gap-1 p-1 bg-white rounded-lg shadow-sm">
+                <Button
+                  variant={view === "upcoming" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setView("upcoming")}
+                  className="text-xs lg:text-sm"
+                >
+                  Sắp tới
+                </Button>
+                <Button
+                  variant={view === "all" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setView("all")}
+                  className="text-xs lg:text-sm"
+                >
+                  Tất cả
+                </Button>
+              </div>
+              <Button onClick={() => setShowCreateDialog(true)} className="btn-gradient text-sm">
+                <Plus className="h-4 w-4 mr-2" />
+                <span className="sm:hidden">Mới</span>
+                <span className="hidden sm:inline">Lịch hẹn mới</span>
               </Button>
             </div>
-            <Button onClick={() => setShowCreateDialog(true)} className="btn-gradient text-sm">
-              <Plus className="h-4 w-4 mr-2" />
-              <span className="sm:hidden">Mới</span>
-              <span className="hidden sm:inline">Lịch hẹn mới</span>
-            </Button>
+          </div>
+          
+          {/* Search Bar */}
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+            <Input
+              placeholder="Tìm kiếm theo tên khách hàng..."
+              value={customerSearch}
+              onChange={(e) => setCustomerSearch(e.target.value)}
+              className="pl-10 bg-white border-slate-200 focus:border-blue-500"
+            />
           </div>
         </div>
 

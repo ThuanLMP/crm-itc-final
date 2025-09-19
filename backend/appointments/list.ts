@@ -41,6 +41,10 @@ export const list = api(
       whereConditions.push(`a.scheduled_at <= $${++paramCount}`);
       params.push(req.toDate);
     }
+    if (req.customerSearch) {
+      whereConditions.push(`LOWER(c.name) LIKE LOWER($${++paramCount})`);
+      params.push(`%${req.customerSearch}%`);
+    }
 
     const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
 
