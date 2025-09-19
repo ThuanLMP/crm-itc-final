@@ -153,7 +153,7 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
               <Label>Người phụ trách</Label>
               <Select value={formData.assignedToId} onValueChange={(value) => handleSelectChange("assignedToId", value)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select employee (defaults to you)" />
+                  <SelectValue placeholder="Chọn nhân viên (mặc định là bạn)" />
                 </SelectTrigger>
                 <SelectContent>
                   {employeesData?.employees?.filter(e => e.active).map((employee) => (
