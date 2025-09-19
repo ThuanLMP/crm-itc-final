@@ -47,8 +47,8 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
     mutationFn: (data: CreateAppointmentRequest) => backend.appointments.create(data),
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Appointment created successfully",
+        title: "Thành công",
+        description: "Tạo lịch hẹn thành công",
       });
       onSuccess();
       setFormData({
