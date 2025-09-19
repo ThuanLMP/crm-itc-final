@@ -100,7 +100,7 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="title">Title *</Label>
+            <Label htmlFor="title">Tiêu đề *</Label>
             <Input
               id="title"
               value={formData.title}
@@ -110,7 +110,7 @@ export function CreateAppointmentDialog({ open, onOpenChange, onSuccess }: Creat
           </div>
 
           <div>
-            <Label>Customer *</Label>
+            <Label>Khách hàng *</Label>
             <Select value={formData.customerId} onValueChange={(value) => handleSelectChange("customerId", value)}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a customer" />
