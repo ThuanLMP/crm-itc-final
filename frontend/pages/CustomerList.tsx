@@ -37,6 +37,7 @@ export function CustomerList() {
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
 
+  const [showCreateContactDialog, setShowCreateContactDialog] = useState(false);
   const [selectedCustomerForContact, setSelectedCustomerForContact] = useState<{ id: string; name: string } | null>(null);
 
   const backend = useBackend();
@@ -250,6 +251,7 @@ export function CustomerList() {
 
   const handleCreateContact = (customer: Customer) => {
     setSelectedCustomerForContact({ id: customer.id, name: customer.name });
+    setShowCreateContactDialog(true);
   };
 
   if (error) {
@@ -821,13 +823,19 @@ export function CustomerList() {
         }}
       />
 
-      {selectedCustomerForContact && (
+      {selectedCustomerForContact && showCreateContactDialog && (
         <CreateContactWithAppointmentDialog
           customerId={selectedCustomerForContact.id}
           customerName={selectedCustomerForContact.name}
+          open={showCreateContactDialog}
           onSuccess={() => {
             setSelectedCustomerForContact(null);
+            setShowCreateContactDialog(false);
             queryClient.invalidateQueries({ queryKey: ["customers"] });
+          }}
+          onClose={() => {
+            setSelectedCustomerForContact(null);
+            setShowCreateContactDialog(false);
           }}
         />
       )}

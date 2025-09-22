@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, Calendar } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import backend from "~backend/client";
 import type { CreateContactRequest } from "~backend/contacts/types";
@@ -15,22 +15,25 @@ import type { CreateAppointmentRequest } from "~backend/appointments/types";
 interface Props {
   customerId: string;
   customerName: string;
+  open?: boolean;
   onSuccess?: () => void;
+  onClose?: () => void;
 }
 
-export default function CreateContactWithAppointmentDialog({ customerId, customerName, onSuccess }: Props) {
-  const [open, setOpen] = useState(false);
+export default function CreateContactWithAppointmentDialog({ 
+  customerId, 
+  customerName, 
+  open = true,
+  onSuccess, 
+  onClose 
+}: Props) {
   const [loading, setLoading] = useState(false);
   const [createAppointment, setCreateAppointment] = useState(false);
   const { toast } = useToast();
 
   const [contactData, setContactData] = useState({
     type: "",
-    subject: "",
-    notes: "",
-    outcome: "",
-    nextStep: "",
-    duration: 30
+    notes: ""
   });
 
   const [appointmentData, setAppointmentData] = useState({
@@ -77,11 +80,8 @@ export default function CreateContactWithAppointmentDialog({ customerId, custome
       const contactRequest: CreateContactRequest = {
         customerId,
         type: contactData.type,
-        subject: contactData.subject || `Liên hệ ${contactData.type}`,
-        notes: contactData.notes,
-        outcome: contactData.outcome || undefined,
-        nextStep: contactData.nextStep || undefined,
-        duration: contactData.duration
+        subject: `Liên hệ ${contactData.type}`,
+        notes: contactData.notes
       };
 
       await backend.contacts.create(contactRequest);
@@ -107,14 +107,10 @@ export default function CreateContactWithAppointmentDialog({ customerId, custome
           : "Đã tạo liên hệ thành công"
       });
 
-      setOpen(false);
+      // Reset form
       setContactData({
         type: "",
-        subject: "",
-        notes: "",
-        outcome: "",
-        nextStep: "",
-        duration: 30
+        notes: ""
       });
       setAppointmentData({
         title: "",
@@ -124,7 +120,9 @@ export default function CreateContactWithAppointmentDialog({ customerId, custome
         reminderMinutes: [15, 60]
       });
       setCreateAppointment(false);
+      
       onSuccess?.();
+      onClose?.();
     } catch (error) {
       console.error("Error creating contact:", error);
       toast({
@@ -138,13 +136,7 @@ export default function CreateContactWithAppointmentDialog({ customerId, custome
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Tạo liên hệ
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose?.()}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Tạo liên hệ mới - {customerName}</DialogTitle>
@@ -170,17 +162,6 @@ export default function CreateContactWithAppointmentDialog({ customerId, custome
             </Select>
           </div>
 
-          {/* Tiêu đề */}
-          <div className="space-y-2">
-            <Label htmlFor="subject">Tiêu đề</Label>
-            <Input
-              id="subject"
-              value={contactData.subject}
-              onChange={(e) => setContactData({...contactData, subject: e.target.value})}
-              placeholder="Tiêu đề liên hệ (tùy chọn)"
-            />
-          </div>
-
           {/* Nội dung */}
           <div className="space-y-2">
             <Label htmlFor="notes">Nội dung *</Label>
@@ -190,41 +171,6 @@ export default function CreateContactWithAppointmentDialog({ customerId, custome
               onChange={(e) => setContactData({...contactData, notes: e.target.value})}
               placeholder="Nội dung chi tiết về cuộc liên hệ"
               className="min-h-[100px]"
-            />
-          </div>
-
-          {/* Kết quả */}
-          <div className="space-y-2">
-            <Label htmlFor="outcome">Kết quả</Label>
-            <Input
-              id="outcome"
-              value={contactData.outcome}
-              onChange={(e) => setContactData({...contactData, outcome: e.target.value})}
-              placeholder="Kết quả của cuộc liên hệ (tùy chọn)"
-            />
-          </div>
-
-          {/* Bước tiếp theo */}
-          <div className="space-y-2">
-            <Label htmlFor="nextStep">Bước tiếp theo</Label>
-            <Input
-              id="nextStep"
-              value={contactData.nextStep}
-              onChange={(e) => setContactData({...contactData, nextStep: e.target.value})}
-              placeholder="Hành động tiếp theo cần thực hiện (tùy chọn)"
-            />
-          </div>
-
-          {/* Thời gian liên hệ */}
-          <div className="space-y-2">
-            <Label htmlFor="duration">Thời gian liên hệ (phút)</Label>
-            <Input
-              id="duration"
-              type="number"
-              value={contactData.duration}
-              onChange={(e) => setContactData({...contactData, duration: parseInt(e.target.value) || 30})}
-              min="1"
-              max="480"
             />
           </div>
 
@@ -292,7 +238,7 @@ export default function CreateContactWithAppointmentDialog({ customerId, custome
           )}
 
           <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button type="button" variant="outline" onClick={onClose}>
               Hủy
             </Button>
             <Button type="submit" disabled={loading}>

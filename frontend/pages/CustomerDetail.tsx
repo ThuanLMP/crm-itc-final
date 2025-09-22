@@ -23,6 +23,7 @@ export function CustomerDetail() {
   const { id } = useParams<{ id: string }>();
   const [showEditDialog, setShowEditDialog] = useState(false);
 
+  const [showCreateContactDialog, setShowCreateContactDialog] = useState(false);
   const [showCreateOrderDialog, setShowCreateOrderDialog] = useState(false);
   const [showCreatePaymentDialog, setShowCreatePaymentDialog] = useState(false);
   const [contactSearch, setContactSearch] = useState("");
@@ -349,14 +350,11 @@ export function CustomerDetail() {
                         className="pl-8 w-full sm:w-64 text-sm lg:text-base"
                       />
                     </div>
-                    <CreateContactWithAppointmentDialog 
-                      customerId={id!} 
-                      customerName={customer.name}
-                      onSuccess={() => {
-                        queryClient.invalidateQueries({ queryKey: ["contacts", id] });
-                        queryClient.invalidateQueries({ queryKey: ["appointments", id] });
-                      }}
-                    />
+                    <Button onClick={() => setShowCreateContactDialog(true)} size="sm" className="text-sm">
+                      <Plus className="h-4 w-4 mr-1" />
+                      <span className="sm:hidden">Thêm</span>
+                      <span className="hidden sm:inline">Tạo liên hệ</span>
+                    </Button>
                   </div>
                 </div>
               </CardHeader>
@@ -713,6 +711,19 @@ export function CustomerDetail() {
               refetch();
               setShowEditDialog(false);
             }}
+          />
+        )}
+
+        {id && showCreateContactDialog && (
+          <CreateContactWithAppointmentDialog
+            customerId={id}
+            customerName={customer.name}
+            open={showCreateContactDialog}
+            onSuccess={() => {
+              queryClient.invalidateQueries({ queryKey: ["contacts", id] });
+              queryClient.invalidateQueries({ queryKey: ["appointments", id] });
+            }}
+            onClose={() => setShowCreateContactDialog(false)}
           />
         )}
 
