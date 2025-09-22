@@ -30,6 +30,7 @@ export function CustomerList() {
     contactStatusId: "",
     productId: "",
     appointmentStatus: "",
+    leadSourceId: "",
   });
   const [sortBy, setSortBy] = useState("created");
   const [sortOrder, setSortOrder] = useState("desc");
@@ -60,6 +61,7 @@ export function CustomerList() {
           contactStatusId: filters.contactStatusId || undefined,
           productId: filters.productId || undefined,
           appointmentStatus: filters.appointmentStatus || undefined,
+          leadSourceId: filters.leadSourceId || undefined,
           sortBy,
           sortOrder,
         });
@@ -132,6 +134,7 @@ export function CustomerList() {
       contactStatusId: "",
       productId: "",
       appointmentStatus: "",
+      leadSourceId: "",
     });
     setPage(1);
   };
@@ -148,6 +151,7 @@ export function CustomerList() {
       contactStatusId: "",
       productId: "",
       appointmentStatus: "",
+      leadSourceId: "",
     };
     
     // Set the appropriate filter based on type
@@ -155,6 +159,9 @@ export function CustomerList() {
       switch (filterType) {
         case "product":
           clearedFilters.productId = value;
+          break;
+        case "leadSource":
+          clearedFilters.leadSourceId = value;
           break;
         case "temperature":
           clearedFilters.temperatureId = value;
@@ -184,6 +191,11 @@ export function CustomerList() {
         return masterData?.products?.filter((p: any) => p.active).map((product: any) => ({
           value: product.id,
           label: product.name
+        })) || [];
+      case "leadSource":
+        return masterData?.leadSources?.filter((ls: any) => ls.active).map((leadSource: any) => ({
+          value: leadSource.id,
+          label: leadSource.name
         })) || [];
       case "temperature":
         return masterData?.temperatures?.filter((t: any) => t.active).map((temp: any) => ({
@@ -218,6 +230,7 @@ export function CustomerList() {
 
   const filterTypes = [
     { value: "product", label: "Sản phẩm" },
+    { value: "leadSource", label: "Nguồn KH" },
     { value: "temperature", label: "Mức độ" },
     { value: "employee", label: "Nhân viên" },
     { value: "province", label: "Tỉnh thành" },
@@ -380,6 +393,7 @@ export function CustomerList() {
                     contactStatusId: "",
                     productId: "",
                     appointmentStatus: "",
+                    leadSourceId: "",
                   });
                   setPage(1);
                 }}
@@ -408,6 +422,7 @@ export function CustomerList() {
                     </TableHead>
                     <TableHead>Thông tin liên hệ</TableHead>
                     <TableHead>Công ty</TableHead>
+                    <TableHead>Nguồn KH</TableHead>
                     <TableHead>Sản phẩm</TableHead>
                     <TableHead>Giai đoạn</TableHead>
                     <TableHead>Mức độ</TableHead>
@@ -432,13 +447,13 @@ export function CustomerList() {
                 <TableBody>
                   {isLoading ? (
                     <TableRow>
-                      <TableCell colSpan={12} className="text-center py-8">
+                      <TableCell colSpan={13} className="text-center py-8">
                         <div className="animate-pulse">Đang tải khách hàng...</div>
                       </TableCell>
                     </TableRow>
                   ) : customersData?.customers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={12} className="text-center py-8">
+                      <TableCell colSpan={13} className="text-center py-8">
                         Không có khách hàng nào...
                       </TableCell>
                     </TableRow>
@@ -468,6 +483,13 @@ export function CustomerList() {
                               </div>
                             )}
                           </div>
+                        </TableCell>
+                        <TableCell>
+                          {customer.leadSource && (
+                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                              {customer.leadSource.name}
+                            </Badge>
+                          )}
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-wrap gap-1 max-w-xs">
@@ -703,6 +725,11 @@ export function CustomerList() {
                   )}
                   
                   <div className="flex flex-wrap gap-1 mt-2">
+                    {customer.leadSource && (
+                      <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                        {customer.leadSource.name}
+                      </Badge>
+                    )}
                     {customer.stage && (
                       <Badge variant="outline" className="text-xs">{customer.stage.name}</Badge>
                     )}

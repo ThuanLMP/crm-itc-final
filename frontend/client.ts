@@ -405,6 +405,7 @@ export namespace customers {
                 contactStatusId:       params.contactStatusId,
                 createdFrom:           params.createdFrom === undefined ? undefined : params.createdFrom.toISOString(),
                 createdTo:             params.createdTo === undefined ? undefined : params.createdTo.toISOString(),
+                leadSourceId:          params.leadSourceId,
                 limit:                 params.limit === undefined ? undefined : String(params.limit),
                 page:                  params.page === undefined ? undefined : String(params.page),
                 productId:             params.productId,

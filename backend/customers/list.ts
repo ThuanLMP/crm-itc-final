@@ -57,6 +57,10 @@ export const list = api<ListCustomersRequest, ListCustomersResponse>(
       whereConditions.push(`c.contact_status_id = $${++paramCount}`);
       params.push(req.contactStatusId);
     }
+    if (req.leadSourceId) {
+      whereConditions.push(`c.lead_source_id = $${++paramCount}`);
+      params.push(req.leadSourceId);
+    }
     if (req.productId) {
       whereConditions.push(`EXISTS (SELECT 1 FROM customer_products cp WHERE cp.customer_id = c.id AND cp.product_id = $${++paramCount})`);
       params.push(req.productId);

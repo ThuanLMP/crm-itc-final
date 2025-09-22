@@ -90,6 +90,7 @@ export interface ListCustomersRequest {
   productId?: string;
   contactStatusId?: string;
   appointmentStatus?: string;
+  leadSourceId?: string;
   createdFrom?: Date;
   createdTo?: Date;
   sortBy?: string;
