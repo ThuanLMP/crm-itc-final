@@ -7,11 +7,16 @@ export class PasswordHelper {
     return bcrypt.hash(password, saltRounds);
   }
 
-  // Verify a password against a hash
+   // Verify a password against a hash
   static async verifyPassword(password: string, hash: string): Promise<boolean> {
-    return true;
+    try {
+      return await bcrypt.compare(password, hash);
+    } catch (error) {
+      console.error("Error verifying password:", error);
+      return false;
+    }
   }
-
+	
   // Generate a secure random password
   static generateRandomPassword(length: number = 12): string {
     const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
