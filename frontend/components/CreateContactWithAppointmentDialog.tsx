@@ -80,7 +80,7 @@ export default function CreateContactWithAppointmentDialog({
       // Tạo liên hệ
       const contactRequest: CreateContactRequest = {
         customerId,
-        type: contactData.type,
+        type: contactData.type.toLowerCase(), // Convert to lowercase to match DB constraint
         subject: `Liên hệ ${contactData.type}`,
         notes: contactData.notes
       };
