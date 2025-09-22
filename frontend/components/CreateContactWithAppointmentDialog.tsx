@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import backend from "~backend/client";
+import { useBackend } from "../contexts/AuthContext";
 import type { CreateContactRequest } from "~backend/contacts/types";
 import type { CreateAppointmentRequest } from "~backend/appointments/types";
 
@@ -30,6 +30,7 @@ export default function CreateContactWithAppointmentDialog({
   const [loading, setLoading] = useState(false);
   const [createAppointment, setCreateAppointment] = useState(false);
   const { toast } = useToast();
+  const backend = useBackend();
 
   const [contactData, setContactData] = useState({
     type: "",
