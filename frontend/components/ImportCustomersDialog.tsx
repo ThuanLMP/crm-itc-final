@@ -124,9 +124,9 @@ export default function ImportCustomersDialog({
               <br />
               Cột E: Loại khách hàng | Cột F: Tên công ty | Cột G: Sản phẩm | Cột H: Nguồn khách hàng
               <br />
-              Cột I: Giai đoạn | Cột J: Ghi chú
+              Cột I: Giai đoạn | Cột J: Ghi chú | Cột K: Tỉnh/Thành phố
               <br />
-              <em>* Trường bắt buộc</em>
+              <em>* Trường bắt buộc. Sản phẩm có thể nhiều cái (cách nhau bằng dấu phẩy)</em>
             </AlertDescription>
           </Alert>
 

@@ -1,0 +1,5 @@
+Nhân viên phụ trách,Tên khách hàng,Điện thoại,Email,Loại khách hàng,Tên công ty,Sản phẩm,Nguồn khách hàng,Giai đoạn,Ghi chú,Tỉnh/Thành phố
+Admin User,Nguyễn Văn A,0901234567,nguyenvana@email.com,Doanh nghiệp,Công ty ABC,Phần mềm,Website,Prospect,Khách hàng tiềm năng cao,Hà Nội
+Admin User,Trần Thị B,0987654321,tranthib@email.com,Cá nhân,Công ty XYZ,"Phần mềm, Dịch vụ",Giới thiệu,Lead,Cần theo dõi thường xuyên,Hồ Chí Minh
+,Lê Văn C,0912345678,,Doanh nghiệp,,Dịch vụ,,,Test import không đầy đủ thông tin,
+,Nguyễn Thị D,0901111111,invalid-email,,,,,,,
