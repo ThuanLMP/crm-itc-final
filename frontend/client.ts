@@ -314,6 +314,8 @@ export namespace contacts {
  */
 import { create as api_customers_create_create } from "~backend/customers/create";
 import { deleteCustomer as api_customers_delete_deleteCustomer } from "~backend/customers/delete";
+import { downloadTemplate as api_customers_download_template_downloadTemplate } from "~backend/customers/download-template";
+import { downloadTemplateWithData as api_customers_download_template_with_data_downloadTemplateWithData } from "~backend/customers/download-template-with-data";
 import { exportCustomers as api_customers_export_exportCustomers } from "~backend/customers/export";
 import { get as api_customers_get_get } from "~backend/customers/get";
 import { importCustomers as api_customers_import_importCustomers } from "~backend/customers/import";
@@ -329,6 +331,8 @@ export namespace customers {
             this.baseClient = baseClient
             this.create = this.create.bind(this)
             this.deleteCustomer = this.deleteCustomer.bind(this)
+            this.downloadTemplate = this.downloadTemplate.bind(this)
+            this.downloadTemplateWithData = this.downloadTemplateWithData.bind(this)
             this.exportCustomers = this.exportCustomers.bind(this)
             this.get = this.get.bind(this)
             this.importCustomers = this.importCustomers.bind(this)
@@ -352,6 +356,18 @@ export namespace customers {
             // Now make the actual call to the API
             const resp = await this.baseClient.callTypedAPI(`/customers/${encodeURIComponent(params.id)}`, {method: "DELETE", body: undefined})
             return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_customers_delete_deleteCustomer>
+        }
+
+        public async downloadTemplate(): Promise<ResponseType<typeof api_customers_download_template_downloadTemplate>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/download-template`, {method: "GET", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_customers_download_template_downloadTemplate>
+        }
+
+        public async downloadTemplateWithData(): Promise<ResponseType<typeof api_customers_download_template_with_data_downloadTemplateWithData>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/download-template-with-data`, {method: "GET", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_customers_download_template_with_data_downloadTemplateWithData>
         }
 
         /**
