@@ -425,19 +425,20 @@ export function CustomerList() {
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                       </Button>
                     </TableHead>
+                    <TableHead>Ghi chú</TableHead>
                     <TableHead className="text-right sticky right-0 bg-white z-10 border-l border-slate-200">Hành động</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {isLoading ? (
                     <TableRow>
-                      <TableCell colSpan={11} className="text-center py-8">
+                      <TableCell colSpan={12} className="text-center py-8">
                         <div className="animate-pulse">Đang tải khách hàng...</div>
                       </TableCell>
                     </TableRow>
                   ) : customersData?.customers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={11} className="text-center py-8">
+                      <TableCell colSpan={12} className="text-center py-8">
                         Không có khách hàng nào...
                       </TableCell>
                     </TableRow>
@@ -549,6 +550,17 @@ export function CustomerList() {
                         <TableCell>
                           <div className="text-sm">
                             {new Date(customer.createdAt).toLocaleDateString()}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm max-w-xs">
+                            {customer.notes ? (
+                              <div className="text-muted-foreground line-clamp-2" title={customer.notes}>
+                                {customer.notes}
+                              </div>
+                            ) : (
+                              <span className="text-muted-foreground italic">Không có ghi chú</span>
+                            )}
                           </div>
                         </TableCell>
                         <TableCell className="text-right sticky right-0 bg-white z-10 border-l border-slate-200">
@@ -750,6 +762,13 @@ export function CustomerList() {
                     <p className="text-muted-foreground">
                       Nhân viên: {customer.assignedSalesperson.name}
                     </p>
+                  )}
+                  
+                  {customer.notes && (
+                    <div className="mt-2 p-2 bg-slate-50 rounded text-xs">
+                      <span className="font-medium text-slate-600">Ghi chú: </span>
+                      <span className="text-muted-foreground">{customer.notes}</span>
+                    </div>
                   )}
                   
                   <div className="flex justify-between items-center text-xs text-muted-foreground mt-3 pt-2 border-t border-slate-100">
