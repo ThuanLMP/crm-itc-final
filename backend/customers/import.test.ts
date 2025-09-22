@@ -45,8 +45,8 @@ describe("Import validation", () => {
     const parsedData = XLSX.utils.sheet_to_json(parsedWorksheet, { header: 1, defval: '' });
     
     // Với defval: '', empty cells sẽ thành empty string
-    expect(parsedData[1][0]).toBe('');
-    expect(parsedData[1][1]).toBe('value');
-    expect(parsedData[1][2]).toBe('');
+    expect((parsedData[1] as any)[0]).toBe('');
+    expect((parsedData[1] as any)[1]).toBe('value');
+    expect((parsedData[1] as any)[2]).toBe('');
   });
 });

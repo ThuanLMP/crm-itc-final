@@ -1,0 +1,4 @@
+Nhân viên phụ trách,Tên khách hàng,Điện thoại,Email,Loại khách hàng,Tên công ty,Sản phẩm,Nguồn khách hàng,Giai đoạn,Ghi chú,Tỉnh/Thành phố
+Admin User,Test Customer 1,0901234567,test1@example.com,Doanh nghiệp,Test Company 1,Phần mềm,Website,Prospect,Khách hàng test 1,Hà Nội
+Admin User,Test Customer 2,0987654321,test2@example.com,Cá nhân,Test Company 2,"Phần mềm, Dịch vụ",Giới thiệu,Lead,Khách hàng test 2,Hồ Chí Minh
+,Test Customer 3,0912345678,,Doanh nghiệp,,Dịch vụ,,,Khách hàng chỉ có thông tin cơ bản,

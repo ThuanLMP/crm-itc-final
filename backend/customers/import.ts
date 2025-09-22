@@ -167,15 +167,22 @@ export const importCustomers = api(
 
           // Insert customer
           const customerId = randomUUID();
+          
+          // Clean and prepare data for insertion
+          const cleanPhone = phone && phone.trim() ? phone.trim() : null;
+          const cleanEmail = email && email.trim() ? email.trim().toLowerCase() : null;
+          const cleanCompanyName = companyName && companyName.trim() ? companyName.trim() : null;
+          const cleanNotes = notes && notes.trim() ? notes.trim() : null;
+          
           await db.query`
             INSERT INTO customers (
               id, name, phone, email, company_name, customer_type_id, 
               assigned_salesperson_id, lead_source_id, stage_id, province_id,
               notes, created_at, updated_at
             ) VALUES (
-              ${customerId}, ${customerName}, ${phone || null}, ${email || null}, 
-              ${companyName || null}, ${customerTypeId}, ${assignedSalespersonId}, 
-              ${leadSourceId}, ${stageId}, ${provinceId}, ${notes || null}, 
+              ${customerId}, ${customerName.trim()}, ${cleanPhone}, ${cleanEmail}, 
+              ${cleanCompanyName}, ${customerTypeId}, ${assignedSalespersonId}, 
+              ${leadSourceId}, ${stageId}, ${provinceId}, ${cleanNotes}, 
               NOW(), NOW()
             )
           `;
@@ -193,11 +200,21 @@ export const importCustomers = api(
           imported++;
         } catch (error) {
           console.error(`Error importing row ${rowNumber}:`, error);
-          const errorMessage = error instanceof Error ? error.message : "Lỗi không xác định";
+          let errorMessage = "Lỗi không xác định";
+          
+          if (error instanceof Error) {
+            if (error.message.includes('duplicate key') || error.message.includes('UNIQUE constraint')) {
+              errorMessage = `Dữ liệu trùng lặp (có thể là tên khách hàng, email hoặc điện thoại)`;
+            } else if (error.message.includes('foreign key') || error.message.includes('FOREIGN KEY constraint')) {
+              errorMessage = `Dữ liệu tham chiếu không hợp lệ (kiểm tra nhân viên, loại khách hàng)`;
+            } else {
+              errorMessage = error.message;
+            }
+          }
+          
           errors.push({ 
             row: rowNumber, 
-            error: errorMessage.includes('duplicate key') ? 
-              `Dữ liệu trùng lặp` : errorMessage
+            error: errorMessage
           });
           failed++;
         }

@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
-import { Upload, FileSpreadsheet, CheckCircle, XCircle } from "lucide-react";
+import { Upload, FileSpreadsheet, CheckCircle, XCircle, Download, Info } from "lucide-react";
 import backend from "~backend/client";
 import type { ImportCustomersResponse } from "~backend/customers/types";
 
@@ -23,8 +23,48 @@ export default function ImportCustomersDialog({
 }: ImportCustomersDialogProps) {
   const [file, setFile] = useState<File | null>(null);
   const [importing, setImporting] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const [importResult, setImportResult] = useState<ImportCustomersResponse | null>(null);
   const { toast } = useToast();
+
+  const handleDownloadTemplate = async () => {
+    setDownloading(true);
+    try {
+      const result = await backend.customers.downloadTemplate();
+      
+      // Create blob and download
+      const byteCharacters = atob(result.fileContent);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = result.fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Thành công",
+        description: "Đã tải xuống file mẫu",
+      });
+    } catch (error) {
+      console.error("Download template error:", error);
+      toast({
+        title: "Lỗi",
+        description: "Không thể tải file mẫu",
+        variant: "destructive"
+      });
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -116,17 +156,44 @@ export default function ImportCustomersDialog({
         </DialogHeader>
 
         <div className="space-y-4">
+          {/* Download template section */}
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              <strong>Bước 1:</strong> Tải xuống file mẫu Excel để đảm bảo đúng định dạng
+            </AlertDescription>
+          </Alert>
+          
+          <div className="flex justify-center">
+            <Button 
+              onClick={handleDownloadTemplate} 
+              disabled={downloading || importing}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Download className="h-4 w-4" />
+              {downloading ? "Đang tải..." : "Tải file mẫu Excel"}
+            </Button>
+          </div>
+
           <Alert>
             <AlertDescription>
-              <strong>Định dạng file Excel yêu cầu:</strong>
+              <strong>Bước 2:</strong> Điền thông tin khách hàng vào file mẫu và upload lại
+            </AlertDescription>
+          </Alert>
+          <Alert>
+            <AlertDescription>
+              <strong>Lưu ý quan trọng:</strong>
               <br />
-              Cột A: Nhân viên phụ trách | Cột B: Tên khách hàng* | Cột C: Điện thoại | Cột D: Email
+              • Chỉ cột "Tên khách hàng" là bắt buộc, không được để trống
               <br />
-              Cột E: Loại khách hàng | Cột F: Tên công ty | Cột G: Sản phẩm | Cột H: Nguồn khách hàng
+              • Email phải đúng định dạng (example@domain.com) nếu nhập
               <br />
-              Cột I: Giai đoạn | Cột J: Ghi chú | Cột K: Tỉnh/Thành phố
+              • Sản phẩm có thể nhập nhiều cái, cách nhau bằng dấu phẩy
               <br />
-              <em>* Trường bắt buộc. Sản phẩm có thể nhiều cái (cách nhau bằng dấu phẩy)</em>
+              • Tên nhân viên, loại khách hàng phải trùng khớp với dữ liệu trong hệ thống
+              <br />
+              • Không được trùng tên khách hàng đã có
             </AlertDescription>
           </Alert>
 
@@ -193,12 +260,12 @@ export default function ImportCustomersDialog({
           )}
 
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={handleClose} disabled={importing}>
+            <Button variant="outline" onClick={handleClose} disabled={importing || downloading}>
               Đóng
             </Button>
             <Button 
               onClick={handleImport} 
-              disabled={!file || importing}
+              disabled={!file || importing || downloading}
               className="flex items-center gap-2"
             >
               <Upload className="h-4 w-4" />
