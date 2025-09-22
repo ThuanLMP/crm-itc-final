@@ -250,6 +250,24 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
               </Select>
             </div>
             <div>
+              <Label className="text-sm lg:text-base">Nguồn khách hàng</Label>
+              <Select value={formData.leadSourceId} onValueChange={(value) => handleSelectChange("leadSourceId", value)}>
+                <SelectTrigger className="w-full text-sm lg:text-base">
+                  <SelectValue placeholder="Chọn nguồn khách hàng" />
+                </SelectTrigger>
+                <SelectContent>
+                  {masterData?.leadSources?.filter((ls: any) => ls.active).map((source: any) => (
+                    <SelectItem key={source.id} value={source.id}>
+                      {source.name}
+                    </SelectItem>
+                  )) || []}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
+            <div>
               <Label className="text-sm lg:text-base">Loại hình kinh doanh</Label>
               <Select value={formData.businessTypeId} onValueChange={(value) => handleSelectChange("businessTypeId", value)}>
                 <SelectTrigger className="w-full text-sm lg:text-base">
@@ -259,6 +277,21 @@ export function EditCustomerDialog({ customer, open, onOpenChange, onSuccess }: 
                   {masterData?.businessTypes?.filter((bt: any) => bt.active).map((type: any) => (
                     <SelectItem key={type.id} value={type.id}>
                       {type.name}
+                    </SelectItem>
+                  )) || []}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm lg:text-base">Quy mô công ty</Label>
+              <Select value={formData.companySizeId} onValueChange={(value) => handleSelectChange("companySizeId", value)}>
+                <SelectTrigger className="w-full text-sm lg:text-base">
+                  <SelectValue placeholder="Chọn quy mô công ty" />
+                </SelectTrigger>
+                <SelectContent>
+                  {masterData?.companySizes?.filter((cs: any) => cs.active).map((size: any) => (
+                    <SelectItem key={size.id} value={size.id}>
+                      {size.name}
                     </SelectItem>
                   )) || []}
                 </SelectContent>
