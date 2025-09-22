@@ -6,34 +6,9 @@ export const downloadTemplate = api(
   { method: "GET", path: "/download-template", expose: true },
   async (): Promise<{ fileContent: string; fileName: string }> => {
     try {
-      // Get master data for sample values
-      const employeeRows: any[] = [];
-      const customerTypeRows: any[] = [];
-      const productRows: any[] = [];
-      const provinceRows: any[] = [];
-      const leadSourceRows: any[] = [];
-      const stageRows: any[] = [];
-
-      for await (const row of db.query`SELECT name FROM employees WHERE active = true LIMIT 3`) {
-        employeeRows.push(row.name);
-      }
-      for await (const row of db.query`SELECT name FROM customer_types WHERE active = true LIMIT 3`) {
-        customerTypeRows.push(row.name);
-      }
-      for await (const row of db.query`SELECT name FROM products WHERE active = true LIMIT 3`) {
-        productRows.push(row.name);
-      }
-      for await (const row of db.query`SELECT name FROM provinces LIMIT 5`) {
-        provinceRows.push(row.name);
-      }
-      for await (const row of db.query`SELECT name FROM lead_sources WHERE active = true LIMIT 3`) {
-        leadSourceRows.push(row.name);
-      }
-      for await (const row of db.query`SELECT name FROM stages WHERE active = true LIMIT 3`) {
-        stageRows.push(row.name);
-      }
-
-      // Create Excel template data
+      console.log('Starting template generation...');
+      
+      // Start with static data first to avoid database issues
       const templateData = [
         // Header row
         [
@@ -51,33 +26,33 @@ export const downloadTemplate = api(
         ],
         // Sample row 1
         [
-          employeeRows[0] || 'Admin User',
+          'Admin User',
           'Nguyễn Văn A',
           '0901234567',
           'nguyenvana@email.com',
-          customerTypeRows[0] || 'Doanh nghiệp',
+          'Doanh nghiệp',
           'Công ty ABC',
-          productRows[0] || 'Phần mềm',
-          leadSourceRows[0] || 'Website',
-          stageRows[0] || 'Prospect',
+          'Phần mềm',
+          'Website',
+          'Prospect',
           'Khách hàng tiềm năng cao',
-          provinceRows[0] || 'Hà Nội'
+          'Hà Nội'
         ],
         // Sample row 2
         [
-          employeeRows[1] || employeeRows[0] || 'Admin User',
+          'Admin User',
           'Trần Thị B',
           '0987654321',
           'tranthib@company.com',
-          customerTypeRows[1] || customerTypeRows[0] || 'Cá nhân',
+          'Cá nhân',
           'Công ty XYZ',
-          `${productRows[0] || 'Phần mềm'}, ${productRows[1] || 'Dịch vụ'}`,
-          leadSourceRows[1] || leadSourceRows[0] || 'Giới thiệu',
-          stageRows[1] || stageRows[0] || 'Lead',
+          'Phần mềm, Dịch vụ',
+          'Giới thiệu',
+          'Lead',
           'Cần theo dõi thường xuyên',
-          provinceRows[1] || provinceRows[0] || 'Hồ Chí Minh'
+          'Hồ Chí Minh'
         ],
-        // Sample row 3 - minimal data to show optional fields
+        // Sample row 3 - minimal data
         [
           '',
           'Lê Văn C',
@@ -85,7 +60,7 @@ export const downloadTemplate = api(
           '',
           '',
           '',
-          productRows[2] || productRows[0] || 'Dịch vụ',
+          'Dịch vụ',
           '',
           '',
           'Khách hàng chỉ có thông tin cơ bản',
@@ -93,10 +68,14 @@ export const downloadTemplate = api(
         ]
       ];
 
+      console.log('Creating workbook...');
+      
       // Create workbook and worksheet
       const workbook = XLSX.utils.book_new();
       const worksheet = XLSX.utils.aoa_to_sheet(templateData);
 
+      console.log('Setting column widths...');
+      
       // Set column widths
       const colWidths = [
         { wch: 20 }, // Nhân viên phụ trách
@@ -113,22 +92,14 @@ export const downloadTemplate = api(
       ];
       worksheet['!cols'] = colWidths;
 
-      // Add some styling (header row)
-      const headerRange = XLSX.utils.decode_range(worksheet['!ref'] || 'A1:K1');
-      for (let col = headerRange.s.c; col <= headerRange.e.c; col++) {
-        const cellAddress = XLSX.utils.encode_cell({ r: 0, c: col });
-        if (worksheet[cellAddress]) {
-          worksheet[cellAddress].s = {
-            font: { bold: true },
-            fill: { fgColor: { rgb: "E3F2FD" } }
-          };
-        }
-      }
-
+      console.log('Adding worksheet to workbook...');
+      
       // Add worksheet to workbook
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Khách hàng');
 
-      // Add instruction sheet
+      console.log('Creating instruction sheet...');
+      
+      // Add simplified instruction sheet
       const instructionData = [
         ['HƯỚNG DẪN SỬ DỤNG FILE MẪU IMPORT KHÁCH HÀNG'],
         [''],
@@ -152,45 +123,21 @@ export const downloadTemplate = api(
         ['   - Không được trùng tên khách hàng đã có trong hệ thống'],
         ['   - Sản phẩm có thể ghi nhiều cái, cách nhau bằng dấu phẩy'],
         [''],
-        ['3. CÁC GIÁ TRỊ HỢP LỆ HIỆN TẠI:'],
-        [''],
-        ['Nhân viên:']
+        ['3. VÍ DỤ DỮ LIỆU HỢP LỆ:'],
+        ['   - Nhân viên: Admin User'],
+        ['   - Loại khách hàng: Doanh nghiệp, Cá nhân'],
+        ['   - Sản phẩm: Phần mềm, Dịch vụ'],
+        ['   - Nguồn: Website, Giới thiệu, Facebook'],
+        ['   - Giai đoạn: Prospect, Lead, Customer'],
+        ['   - Tỉnh/TP: Hà Nội, Hồ Chí Minh, Đà Nẵng'],
       ];
-
-      // Add current valid values to instruction
-      let currentRow = instructionData.length;
-      employeeRows.forEach(name => {
-        instructionData.push([`   - ${name}`]);
-      });
-      
-      instructionData.push(['']);
-      instructionData.push(['Loại khách hàng:']);
-      customerTypeRows.forEach(name => {
-        instructionData.push([`   - ${name}`]);
-      });
-
-      instructionData.push(['']);
-      instructionData.push(['Sản phẩm:']);
-      productRows.forEach(name => {
-        instructionData.push([`   - ${name}`]);
-      });
-
-      instructionData.push(['']);
-      instructionData.push(['Nguồn khách hàng:']);
-      leadSourceRows.forEach(name => {
-        instructionData.push([`   - ${name}`]);
-      });
-
-      instructionData.push(['']);
-      instructionData.push(['Giai đoạn:']);
-      stageRows.forEach(name => {
-        instructionData.push([`   - ${name}`]);
-      });
 
       const instructionWorksheet = XLSX.utils.aoa_to_sheet(instructionData);
       instructionWorksheet['!cols'] = [{ wch: 80 }];
       XLSX.utils.book_append_sheet(workbook, instructionWorksheet, 'Hướng dẫn');
 
+      console.log('Converting to buffer...');
+      
       // Convert to buffer and base64
       const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
       const base64Content = buffer.toString('base64');
@@ -198,13 +145,25 @@ export const downloadTemplate = api(
       const currentDate = new Date().toISOString().split('T')[0];
       const fileName = `mau_import_khach_hang_${currentDate}.xlsx`;
 
+      console.log('Template generation completed successfully');
+      
       return {
         fileContent: base64Content,
         fileName: fileName
       };
     } catch (error) {
       console.error("Template generation error:", error);
-      throw new Error("Không thể tạo file mẫu");
+      
+      // Return detailed error information
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorStack = error instanceof Error ? error.stack : 'No stack trace';
+      
+      console.error('Error details:', {
+        message: errorMessage,
+        stack: errorStack
+      });
+      
+      throw new Error(`Không thể tạo file mẫu: ${errorMessage}`);
     }
   }
 );
