@@ -477,7 +477,7 @@ export namespace employees {
         }
 
         /**
-         * Lists all employees (admin only)
+         * Lists all employees (admin and employees can view)
          */
         public async list(): Promise<ResponseType<typeof api_employees_list_list>> {
             // Now make the actual call to the API

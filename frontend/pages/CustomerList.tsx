@@ -12,7 +12,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useBackend, useAuth } from "../contexts/AuthContext";
 import { CreateCustomerDialog } from "../components/CreateCustomerDialog";
 import { EditCustomerDialog } from "../components/EditCustomerDialog";
-import { CreateContactDialog } from "../components/CreateContactDialog";
+import CreateContactWithAppointmentDialog from "../components/CreateContactWithAppointmentDialog";
 import { ExportDropdown } from "../components/ExportDropdown";
 import ImportCustomersDialog from "../components/ImportCustomersDialog";
 import type { Customer } from "~backend/customers/types";
@@ -36,8 +36,8 @@ export function CustomerList() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
-  const [showCreateContactDialog, setShowCreateContactDialog] = useState(false);
-  const [selectedCustomerForContact, setSelectedCustomerForContact] = useState<string | null>(null);
+
+  const [selectedCustomerForContact, setSelectedCustomerForContact] = useState<{ id: string; name: string } | null>(null);
 
   const backend = useBackend();
   const { user } = useAuth();
@@ -248,9 +248,8 @@ export function CustomerList() {
     }
   };
 
-  const handleCreateContact = (customerId: string) => {
-    setSelectedCustomerForContact(customerId);
-    setShowCreateContactDialog(true);
+  const handleCreateContact = (customer: Customer) => {
+    setSelectedCustomerForContact({ id: customer.id, name: customer.name });
   };
 
   if (error) {
@@ -560,7 +559,7 @@ export function CustomerList() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => handleCreateContact(customer.id)}
+                              onClick={() => handleCreateContact(customer)}
                               className="h-8 px-2 hover:bg-green-50 hover:text-green-600 hover:border-green-200"
                               title="Thêm liên hệ nhanh"
                             >
@@ -643,7 +642,7 @@ export function CustomerList() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleCreateContact(customer.id)}
+                      onClick={() => handleCreateContact(customer)}
                       className="h-8 w-8 p-0 hover:bg-green-50 hover:text-green-600 hover:border-green-200"
                       title="Thêm liên hệ nhanh"
                     >
@@ -823,14 +822,12 @@ export function CustomerList() {
       />
 
       {selectedCustomerForContact && (
-        <CreateContactDialog
-          customerId={selectedCustomerForContact}
-          open={showCreateContactDialog}
-          onOpenChange={(open) => {
-            setShowCreateContactDialog(open);
-            if (!open) {
-              setSelectedCustomerForContact(null);
-            }
+        <CreateContactWithAppointmentDialog
+          customerId={selectedCustomerForContact.id}
+          customerName={selectedCustomerForContact.name}
+          onSuccess={() => {
+            setSelectedCustomerForContact(null);
+            queryClient.invalidateQueries({ queryKey: ["customers"] });
           }}
         />
       )}

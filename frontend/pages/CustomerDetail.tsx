@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { Edit, Phone, Mail, MapPin, Building, MessageCircle, Calendar, Receipt, 
 import { useToast } from "@/components/ui/use-toast";
 import { useBackend, useAuth } from "../contexts/AuthContext";
 import { EditCustomerDialog } from "../components/EditCustomerDialog";
-import { CreateContactDialog } from "../components/CreateContactDialog";
+import CreateContactWithAppointmentDialog from "../components/CreateContactWithAppointmentDialog";
 import { CreateOrderDialog } from "../components/CreateOrderDialog";
 import { CreatePaymentDialog } from "../components/CreatePaymentDialog";
 import { CustomerAppointments } from "../components/CustomerAppointments";
@@ -22,7 +22,7 @@ import type { Payment } from "~backend/payments/types";
 export function CustomerDetail() {
   const { id } = useParams<{ id: string }>();
   const [showEditDialog, setShowEditDialog] = useState(false);
-  const [showCreateContactDialog, setShowCreateContactDialog] = useState(false);
+
   const [showCreateOrderDialog, setShowCreateOrderDialog] = useState(false);
   const [showCreatePaymentDialog, setShowCreatePaymentDialog] = useState(false);
   const [contactSearch, setContactSearch] = useState("");
@@ -31,6 +31,7 @@ export function CustomerDetail() {
   const backend = useBackend();
   const { user } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: customer, isLoading, error, refetch } = useQuery({
     queryKey: ["customer", id],
@@ -348,11 +349,14 @@ export function CustomerDetail() {
                         className="pl-8 w-full sm:w-64 text-sm lg:text-base"
                       />
                     </div>
-                    <Button onClick={() => setShowCreateContactDialog(true)} size="sm" className="text-sm">
-                      <Plus className="h-4 w-4 mr-1" />
-                      <span className="sm:hidden">Thêm</span>
-                      <span className="hidden sm:inline">Thêm liên hệ</span>
-                    </Button>
+                    <CreateContactWithAppointmentDialog 
+                      customerId={id!} 
+                      customerName={customer.name}
+                      onSuccess={() => {
+                        queryClient.invalidateQueries({ queryKey: ["contacts", id] });
+                        queryClient.invalidateQueries({ queryKey: ["appointments", id] });
+                      }}
+                    />
                   </div>
                 </div>
               </CardHeader>
@@ -714,11 +718,7 @@ export function CustomerDetail() {
 
         {id && (
           <>
-            <CreateContactDialog
-              customerId={id}
-              open={showCreateContactDialog}
-              onOpenChange={setShowCreateContactDialog}
-            />
+
             <CreateOrderDialog
               customerId={id}
               open={showCreateOrderDialog}
