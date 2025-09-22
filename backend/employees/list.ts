@@ -3,14 +3,15 @@ import { getAuthData } from "~encore/auth";
 import db from "../db";
 import { ListEmployeesResponse } from "./types";
 
-// Lists all employees (admin only)
+// Lists all employees (admin and employees can view)
 export const list = api(
   { expose: true, method: "GET", path: "/employees", auth: true },
   async (): Promise<ListEmployeesResponse> => {
     const auth = getAuthData()!;
     
-    if (auth.role !== "admin") {
-      throw new Error("Access denied - Admin only");
+    // Allow both admin and employee roles to view employee list
+    if (auth.role !== "admin" && auth.role !== "employee") {
+      throw new Error("Access denied - Admin or Employee role required");
     }
 
     const employees = await db.queryAll`
