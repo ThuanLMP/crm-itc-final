@@ -103,22 +103,7 @@ export function Login() {
               {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
             </Button>
           </form>
-          <div className="mt-4 lg:mt-6 p-3 lg:p-4 bg-slate-50 rounded-lg border border-slate-200">
-            <h4 className="text-xs lg:text-sm font-medium text-slate-700 mb-2 lg:mb-3">Tài khoản demo:</h4>
-            <div className="space-y-2 text-xs lg:text-sm">
-              <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center p-2 bg-white rounded border gap-1 lg:gap-0">
-                <span className="text-slate-600">Quản trị viên:</span>
-                <span className="font-mono text-blue-600 text-xs lg:text-sm">admin@crm.com / admin123</span>
-              </div>
-              <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center p-2 bg-white rounded border gap-1 lg:gap-0">
-                <span className="text-slate-600">Nhân viên:</span>
-                <span className="font-mono text-green-600 text-xs lg:text-sm">employee@crm.com / employee123</span>
-              </div>
-            </div>
-            <p className="text-xs text-slate-500 mt-2 lg:mt-3">
-              📝 Tài khoản admin đã được điền sẵn, nhấn "Đăng nhập" để vào hệ thống
-            </p>
-          </div>
+         
         </CardContent>
       </Card>
     </div>
