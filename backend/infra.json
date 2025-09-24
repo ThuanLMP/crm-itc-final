@@ -1,0 +1,20 @@
+{
+  "$schema": "https://encore.dev/schemas/infra.schema.json",
+  "metadata": {
+    "app_id": "crm-itc-final-kcgi",
+    "env_name": "production",
+    "env_type": "production",
+    "base_url": "http://api.taxnet.cloud"
+  },
+  "sql_servers": [
+    {
+      "host": "finalcrm-db:5432",
+      "databases": {
+        "crm_db": {
+          "username": "postgres",
+          "password": "123456aA@"
+        }
+      }
+    }
+  ]
+}

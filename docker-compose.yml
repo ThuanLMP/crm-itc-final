@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  crm_db:
+    image: postgres:15
+    container_name: finalcrm-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "123456aA@"
+      POSTGRES_DB: crm_db                  # khớp với infra.json & code Encore
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"        
+
+  backend:
+    image: finalcrm_backend      # bạn đã build bằng 'encore build docker'
+    container_name: finalcrm-backend
+    restart: always
+    depends_on:
+      - crm_db
+    ports:
+      - "5000:8080"                        # Encore image mặc định lắng nghe 8080
+volumes:
+  db_data:

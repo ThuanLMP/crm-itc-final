@@ -41,7 +41,7 @@ export const importCustomers = api(
       const stageRows: any[] = [];
 
       // Collect all data using for await loops
-      for await (const row of db.query`SELECT id, name FROM employees WHERE active = true`) {
+      for await (const row of db.query`SELECT id, name FROM users WHERE active = true`) {
         employeeRows.push(row);
       }
       for await (const row of db.query`SELECT id, name FROM customer_types WHERE active = true`) {
@@ -173,8 +173,7 @@ export const importCustomers = api(
           const cleanEmail = email && email.trim() ? email.trim().toLowerCase() : null;
           const cleanCompanyName = companyName && companyName.trim() ? companyName.trim() : null;
           const cleanNotes = notes && notes.trim() ? notes.trim() : null;
-          
-          await db.query`
+          const logs = await db.queryRow`
             INSERT INTO customers (
               id, name, phone, email, company_name, customer_type_id, 
               assigned_salesperson_id, lead_source_id, stage_id, province_id,
@@ -185,12 +184,12 @@ export const importCustomers = api(
               ${leadSourceId}, ${stageId}, ${provinceId}, ${cleanNotes}, 
               NOW(), NOW()
             )
+            RETURNING *
           `;
-
           // Insert customer products
           for (const productId of productIds) {
             if (productId) {
-              await db.query`
+              await db.queryRow`
                 INSERT INTO customer_products (customer_id, product_id) 
                 VALUES (${customerId}, ${productId})
               `;
